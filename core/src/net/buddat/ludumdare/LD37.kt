@@ -7,6 +7,16 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class LD37 : ApplicationAdapter() {
+	
+	private val logic: LogicEngine
+	private val logicThread: Thread
+	
+	init {
+		logic = LogicEngine()
+		logicThread = Thread(logic)
+		logicThread.start()
+	}
+	
     internal lateinit var batch: SpriteBatch
     internal lateinit var img: Texture
 
@@ -27,4 +37,5 @@ class LD37 : ApplicationAdapter() {
         batch.dispose()
         img.dispose()
     }
+	
 }
