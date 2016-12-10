@@ -52,6 +52,7 @@ class LD37 : ApplicationAdapter(), InputProcessor {
 
 	override fun render() {
 		running = true
+		logic.update(Gdx.graphics.deltaTime)
 		
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
