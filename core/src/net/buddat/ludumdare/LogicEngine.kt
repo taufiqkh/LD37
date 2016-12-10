@@ -21,7 +21,7 @@ class LogicEngine {
 	var currentRoom: Room
 
 	init {
-		currentRoom = Room(defaultMap)
+		currentRoom = Room(Constants.defaultMap)
 		
 		engine.addEntity(currentRoom)
 		engine.addEntity(player)

@@ -41,8 +41,8 @@ class LD37 : ApplicationAdapter() {
 	}
 	
 	fun updateCameraPosition() {
-		camera.position.set(logic.getPlayerPosn().x * PPM + width / 5,
-				logic.getPlayerPosn().y * PPM, 0f)
+		camera.position.set(logic.getPlayerPosn().x * Constants.PPM + Constants.width / 5,
+				logic.getPlayerPosn().y * Constants.PPM, 0f)
 		
 		val camLeft = camera.position.x - camera.viewportWidth / 2f
 		val camRight = camera.position.x + camera.viewportWidth / 2f
@@ -51,10 +51,10 @@ class LD37 : ApplicationAdapter() {
 		
 		if (camLeft < 0)
 			camera.position.x = camera.viewportWidth / 2f
-		if (camRight > tiledMap.properties.get("width") as Int * PPM)
-			camera.position.x = tiledMap.properties.get("width") as Int * PPM - camera.viewportWidth / 2f
-		if (camTop > tiledMap.properties.get("height") as Int * PPM)
-			camera.position.y = tiledMap.properties.get("height") as Int * PPM - camera.viewportHeight / 2f
+		if (camRight > tiledMap.properties.get("width") as Int * Constants.PPM)
+			camera.position.x = tiledMap.properties.get("width") as Int * Constants.PPM - camera.viewportWidth / 2f
+		if (camTop > tiledMap.properties.get("height") as Int * Constants.PPM)
+			camera.position.y = tiledMap.properties.get("height") as Int * Constants.PPM - camera.viewportHeight / 2f
 		if (camBottom < 0)
 			camera.position.y = camera.viewportHeight / 2f
 		
@@ -115,7 +115,7 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer.render()
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined
-		playerRenderer.render(logic.getPlayerPosn().x * PPM, logic.getPlayerPosn().y * PPM, System.currentTimeMillis() % 2000 > 1000)
+		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, System.currentTimeMillis() % 2000 > 1000)
 	}
 
 	override fun dispose() {
