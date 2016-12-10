@@ -12,6 +12,7 @@ import net.buddat.ludumdare.input.InputHandler
 class LD37 : ApplicationAdapter() {
 
 	private val logic: LogicEngine
+	val inputHandler = InputHandler()
 
 	init {
 		logic = LogicEngine()
@@ -53,7 +54,6 @@ class LD37 : ApplicationAdapter() {
 		var delta = if (lastChecked == 0L) 0L else System.currentTimeMillis() - lastChecked
 		lastChecked = System.currentTimeMillis()
 
-		val inputHandler = InputHandler()
 		val (up, down, left, right, jump) = inputHandler.poll()
 		when {
 			right -> renderX += delta / movementSpeed
