@@ -20,8 +20,7 @@ class PlayerEntity(val body: Body) : Entity() {
 	var isLanding: Boolean = false
 	var isIdle: Boolean = true
 
-	fun move(aVelocity: Vector2, movement: Vector2) {
-		_velocity.set(aVelocity)
-		_position.add(movement)
+	fun move() {
+		_position.set(body.position)
 	}
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.input.InputHandler
 import net.buddat.ludumdare.movement.Speed.gravity
+import net.buddat.ludumdare.movement.Speed.horizontalImpulse
 import net.buddat.ludumdare.movement.Speed.jumpSpeed
 import net.buddat.ludumdare.movement.Speed.movementSpeed
 
@@ -11,20 +12,27 @@ import net.buddat.ludumdare.movement.Speed.movementSpeed
  * Calculates movement based on a delta
  */
 class MovementCalculator(val delta: Float) {
-	fun rawMovement(input: InputHandler.InputResult, player: PlayerEntity): Vector2 {
+	fun rawMovement(input: InputHandler.InputResult, player: PlayerEntity) {
 		val (up, down, left, right, jump) = input
 		// base movement
-		val xMovement = if (right && !left) movementSpeed
-		else if (left && !right) -movementSpeed
-		else 0f
+		val bodyPosn = player.body.position
+		val velX = player.body.linearVelocity.x
+		if (right xor left) {
+			if (right && velX < Speed.maxHorzVelocity ||
+				left && velX > -Speed.maxHorzVelocity) {
+				player.isMoving = true
+				val impulse = if (right) horizontalImpulse
+					else -horizontalImpulse
+				player.body.applyLinearImpulse(impulse, 0f, bodyPosn.x, bodyPosn.y, true)
+			}
+		} else if (velX == 0f) {
+			player.isMoving = false;
+		}
+
 		var yMovement = calcRawYMovement(input, player)
 
 		if (jump) player.isAirborne = true
 		else if (player.isAirborne) yMovement = applyGravity(yMovement)
-		else if (xMovement == 0f) player.isMoving = false
-		else player.isMoving = true
-
-		return Vector2(xMovement, yMovement)
 	}
 
 	fun calcRawYMovement(input: InputHandler.InputResult, player: PlayerEntity): Float {

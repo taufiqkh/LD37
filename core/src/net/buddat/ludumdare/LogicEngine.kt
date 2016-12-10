@@ -42,14 +42,23 @@ class LogicEngine {
 
 	// Avoid slow spiral of death on slow devices
 	val minFrameTime = 0.25f
+	val timeStep = 1/90.0f
+	val velocityIterations = 6
+	val positionIterations = 2
+
+	var accumulator:Double = 0.0
 
 	fun update(delta: Float) {
 		val frameTime = Math.min(delta, minFrameTime)
-		val mCalc = MovementCalculator(delta)
-		val movement = mCalc.rawMovement(inputHandler.poll(), player)
+		accumulator += frameTime
+		while (accumulator >= timeStep) {
+			world.step(timeStep, velocityIterations, positionIterations)
+			accumulator -= timeStep
+			val mCalc = MovementCalculator(delta)
+			mCalc.rawMovement(inputHandler.poll(), player)
 
-
-		player.move(movement, movement.cpy().scl(frameTime))
+			player.move()
+		}
 	}
 
 	fun createPlayerBody(): Body {
