@@ -56,8 +56,6 @@ class LogicEngine {
 			accumulator -= timeStep
 			val mCalc = MovementCalculator(delta)
 			mCalc.rawMovement(inputHandler.poll(), player)
-
-			player.move()
 		}
 	}
 
