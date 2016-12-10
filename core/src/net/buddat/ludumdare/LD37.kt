@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.*
 import net.buddat.ludumdare.graphics.PlayerViewer
 
-class LD37 : ApplicationAdapter(), InputProcessor {
+class LD37 : ApplicationAdapter() {
 
 	private val logic: LogicEngine
 
@@ -40,7 +40,6 @@ class LD37 : ApplicationAdapter(), InputProcessor {
 		camera.update()
 
 		switchMap("testingMap.tmx")
-		Gdx.input.inputProcessor = this
 
 		playerRenderer = PlayerViewer()
 		playerRenderer.create()
@@ -64,50 +63,5 @@ class LD37 : ApplicationAdapter(), InputProcessor {
 	override fun dispose() {
 		tiledMap.dispose()
 		playerRenderer.dispose()
-	}
-
-	override fun keyDown(keycode: Int): Boolean {
-		return false;
-	}
-
-	override fun keyUp(keycode: Int): Boolean {
-		if (keycode == Input.Keys.LEFT)
-			camera.translate(-32f, 0f);
-		if (keycode == Input.Keys.RIGHT)
-			camera.translate(32f, 0f);
-		if (keycode == Input.Keys.UP)
-			camera.translate(0f, 32f);
-		if (keycode == Input.Keys.DOWN)
-			camera.translate(0f, -32f);
-		if (keycode == Input.Keys.NUM_1)
-			tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
-		if (keycode == Input.Keys.NUM_2)
-			tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
-
-		return false;
-	}
-
-	override fun keyTyped(character: Char): Boolean {
-		return false;
-	}
-
-	override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-		return false;
-	}
-
-	override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-		return false;
-	}
-
-	override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
-		return false;
-	}
-
-	override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-		return false;
-	}
-
-	override fun scrolled(amount: Int): Boolean {
-		return false;
 	}
 }
