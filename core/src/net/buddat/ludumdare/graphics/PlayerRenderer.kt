@@ -65,7 +65,7 @@ class PlayerRenderer {
 		spriteBatch.begin()
 		if (reverse)
 			currentFrame.flip(true, false)
-		spriteBatch.draw(currentFrame, x, y)
+		spriteBatch.draw(currentFrame, x - currentFrame.regionWidth / 2f, y - currentFrame.regionHeight / 2f)
 		spriteBatch.end()
 		
 		if (reverse)

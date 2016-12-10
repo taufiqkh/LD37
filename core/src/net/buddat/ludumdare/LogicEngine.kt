@@ -88,7 +88,7 @@ class LogicEngine {
 		bodyDef.position.set(2f, 6f)
 		bodyDef.fixedRotation = true
 		val bounds = PolygonShape()
-		bounds.setAsBox(0.5f, 1f)
+		bounds.setAsBox(0.4f, 0.8f)
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = bounds
 		fixtureDef.density = 1f
