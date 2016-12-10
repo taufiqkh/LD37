@@ -10,7 +10,7 @@ import net.buddat.ludumdare.input.KeyMappingConfig
 /**
  * Powers the entity handling
  */
-class LogicEngine : Runnable {
+class LogicEngine {
 	val engine: Engine = Engine()
 	val player: PlayerEntity = PlayerEntity()
 	val inputHandler = InputHandler(KeyMappingConfig())
@@ -18,10 +18,6 @@ class LogicEngine : Runnable {
 	init {
 		engine.addEntity(Room())
 		engine.addEntity(player)
-	}
-
-	override fun run() {
-		println("Hello World")
 	}
 
 	fun getPlayerPosn(): Vector2 {

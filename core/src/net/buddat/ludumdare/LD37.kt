@@ -11,12 +11,9 @@ import com.badlogic.gdx.Input.*
 class LD37 : ApplicationAdapter() {
 
 	private val logic: LogicEngine
-	private val logicThread: Thread
 
 	init {
 		logic = LogicEngine()
-		logicThread = Thread(logic)
-		logicThread.start()
 	}
 	
     internal lateinit var batch: SpriteBatch
