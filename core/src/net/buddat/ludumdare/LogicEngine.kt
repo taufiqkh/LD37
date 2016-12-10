@@ -13,9 +13,13 @@ class LogicEngine {
 	val engine: Engine = Engine()
 	val player: PlayerEntity = PlayerEntity()
 	val inputHandler = InputHandler()
+	
+	var currentRoom: Room
 
 	init {
-		engine.addEntity(Room())
+		currentRoom = Room(defaultMap)
+		
+		engine.addEntity(currentRoom)
 		engine.addEntity(player)
 	}
 

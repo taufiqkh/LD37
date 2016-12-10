@@ -25,8 +25,8 @@ class LD37 : ApplicationAdapter() {
 	var renderX = 0f
 	var renderY = 0f
 
-	fun switchMap(newMap: String) {
-		tiledMap = TmxMapLoader().load(newMap)
+	fun switchMap(newMap: TiledMap) {
+		tiledMap = newMap
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
 		tiledMap.layers.get(1).isVisible = false
 	}
@@ -39,7 +39,7 @@ class LD37 : ApplicationAdapter() {
 		camera.setToOrtho(false, w, h)
 		camera.update()
 
-		switchMap("testingMap.tmx")
+		switchMap(logic.currentRoom.tiledMap)
 
 		playerRenderer = PlayerViewer()
 		playerRenderer.create()
@@ -48,6 +48,11 @@ class LD37 : ApplicationAdapter() {
 	override fun render() {
 		running = true
 		logic.update(Gdx.graphics.deltaTime)
+		
+		if (logic.currentRoom.tiledMap != tiledMap) {
+			// TODO: Morph between current map and new map
+			switchMap(logic.currentRoom.tiledMap)
+		}
 
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
@@ -57,7 +62,7 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer.setView(camera)
 		tiledMapRenderer.render()
 
-		playerRenderer.render(logic.getPlayerPosn().x, logic.getPlayerPosn().y)
+		playerRenderer.render(logic.getPlayerPosn().x * 10f, logic.getPlayerPosn().y * 10f)
 	}
 
 	override fun dispose() {
