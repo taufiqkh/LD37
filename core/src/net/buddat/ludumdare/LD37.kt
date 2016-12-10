@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import net.buddat.ludumdare.graphics.PlayerRenderer
+import net.buddat.ludumdare.graphics.UIRenderer
 
 class LD37 : ApplicationAdapter() {
 
@@ -19,6 +20,7 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var camera: OrthographicCamera
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
 	internal lateinit var playerRenderer: PlayerRenderer
+	internal lateinit var uiRenderer: UIRenderer
 
 	var running = false
 
@@ -88,6 +90,9 @@ class LD37 : ApplicationAdapter() {
 
 		playerRenderer = PlayerRenderer()
 		playerRenderer.create()
+		
+		uiRenderer = UIRenderer()
+		uiRenderer.create()
 	}
 
 	override fun render() {
