@@ -33,7 +33,7 @@ class LogicEngine {
 		engine.addEntity(currentRoom)
 		engine.addEntity(player)
 		createFloor(floor)
-		createCircle()
+		//createCircle()
 	}
 
 	fun getPlayerPosn(): Vector2 {
@@ -65,12 +65,13 @@ class LogicEngine {
 		val bodyDef: BodyDef = BodyDef()
 		bodyDef.type = BodyDef.BodyType.DynamicBody
 		bodyDef.position.set(0f, 10f)
+		bodyDef.fixedRotation = true
 		val bounds = PolygonShape()
-		bounds.setAsBox(1.5f, 2f)
+		bounds.setAsBox(1f, 1f)
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = bounds
-		fixtureDef.density = 0.5f
-		fixtureDef.friction = 0.4f
+		fixtureDef.density = 1f
+		fixtureDef.friction = 2f
 		fixtureDef.restitution = 0f
 		val body: Body = world.createBody(bodyDef)
 		body.createFixture(fixtureDef)
@@ -99,7 +100,10 @@ class LogicEngine {
 		val body: Body = world.createBody(bodyDef)
 		val floorBox: PolygonShape = PolygonShape()
 		floorBox.setAsBox(100f, 8f)
-		body.createFixture(floorBox, 0.0f)
+		val fixtureDef: FixtureDef = FixtureDef()
+		fixtureDef.shape = floorBox
+		fixtureDef.friction = 10f
+		body.createFixture(fixtureDef)
 		floorBox.dispose()
 		return body
 	}

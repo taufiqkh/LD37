@@ -5,7 +5,7 @@ package net.buddat.ludumdare.movement
  */
 object Speed {
 	val movementSpeed = 10f
-	val horizontalImpulse = 10f
+	val horizontalImpulse = 2f
 	val maxHorzVelocity = 10f
 	val maxVertVelocity = 100f
 	val jumpSpeed = 10f

@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body
  * Entity representing the player
  */
 class PlayerEntity(val body: Body) : Entity() {
-	private val _position = Vector2()
+	private val _position = Vector2(body.position)
 	val position: Vector2
 		get() = _position.cpy()
 	private val _velocity = Vector2()
