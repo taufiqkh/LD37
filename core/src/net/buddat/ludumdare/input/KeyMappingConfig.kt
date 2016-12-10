@@ -12,14 +12,14 @@ data class KeyMappingConfig(val up: KeyMapping = KeyMapping(KeyMappingConfig.DEF
 							val right: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_RIGHT, KeyMappingConfig.DEFAULT_RIGHT2),
 							val jump: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_JUMP)) {
 	companion object {
-		const val DEFAULT_UP = Input.Keys.A
-		const val DEFAULT_UP2 = Input.Keys.UP
-		const val DEFAULT_DOWN = Input.Keys.S
-		const val DEFAULT_DOWN2 = Input.Keys.DOWN
-		const val DEFAULT_LEFT = Input.Keys.A
-		const val DEFAULT_LEFT2 = Input.Keys.A
-		const val DEFAULT_RIGHT = Input.Keys.D
-		const val DEFAULT_RIGHT2 = Input.Keys.D
-		const val DEFAULT_JUMP = Input.Keys.SPACE
+		val DEFAULT_UP = Input.Keys.W
+		val DEFAULT_UP2 = Input.Keys.UP
+		val DEFAULT_DOWN = Input.Keys.S
+		val DEFAULT_DOWN2 = Input.Keys.DOWN
+		val DEFAULT_LEFT = Input.Keys.A
+		val DEFAULT_LEFT2 = Input.Keys.LEFT
+		val DEFAULT_RIGHT = Input.Keys.D
+		val DEFAULT_RIGHT2 = Input.Keys.RIGHT
+		val DEFAULT_JUMP = Input.Keys.SPACE
 	}
 }
