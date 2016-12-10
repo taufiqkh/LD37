@@ -29,6 +29,11 @@ class MovementCalculator(val delta: Float) {
 	}
 
 	fun applyVerticalImpulse(jump: Boolean, player: PlayerEntity) {
+		val velY = player.body.linearVelocity.y
+		if (jump && velY == 0f) {
+			val bodyPosn = player.body.position
+			player.body.applyLinearImpulse(0f, jumpSpeed, bodyPosn.x, bodyPosn.y, true)
+		}
 	}
 
 	fun rawMovement(input: InputHandler.InputResult, player: PlayerEntity) {
@@ -36,21 +41,5 @@ class MovementCalculator(val delta: Float) {
 		// base movement
 		applyHorizonalImpulse(left, right, player)
 		applyVerticalImpulse(jump, player)
-
-		var yMovement = calcRawYMovement(input, player)
-
-		if (jump) player.isAirborne = true
-		else if (player.isAirborne) yMovement = applyGravity(yMovement)
 	}
-
-	fun calcRawYMovement(input: InputHandler.InputResult, player: PlayerEntity): Float {
-		val (up, down, left, right, jump) = input
-		return if (player.isAirborne) player.velocity.y
-			else if (jump) jumpSpeed
-			else if (up && !down) movementSpeed
-			else if (down && !up) -movementSpeed
-			else 0f
-	}
-
-	fun applyGravity(verticalMovement: Float): Float = verticalMovement - gravity
 }

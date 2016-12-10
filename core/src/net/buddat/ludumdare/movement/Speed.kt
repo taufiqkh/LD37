@@ -9,5 +9,5 @@ object Speed {
 	val maxHorzVelocity = 7f
 	val maxVertVelocity = 100f
 	val jumpSpeed = 10f
-	val gravity = 0.98f
+	val gravity = 9.8f
 }
