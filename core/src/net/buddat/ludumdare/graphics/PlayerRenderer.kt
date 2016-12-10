@@ -9,7 +9,7 @@ enum class AnimationState {
 	RUNNING, IDLE, JUMPING, LANDING
 }
 
-class PlayerViewer {
+class PlayerRenderer {
 	
 	val spriteSheetCols = 8
 	val spriteSheetRows = 4

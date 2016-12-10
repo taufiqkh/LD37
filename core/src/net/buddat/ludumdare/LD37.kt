@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import net.buddat.ludumdare.graphics.PlayerViewer
+import net.buddat.ludumdare.graphics.PlayerRenderer
 
 class LD37 : ApplicationAdapter() {
 
@@ -18,12 +18,19 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var tiledMap: TiledMap
 	internal lateinit var camera: OrthographicCamera
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
-	internal lateinit var playerRenderer: PlayerViewer
+	internal lateinit var playerRenderer: PlayerRenderer
 
 	var running = false
 
 	var renderX = 0f
 	var renderY = 0f
+	
+	var shouldZoom = false
+	var camZoom = 1f;
+	var zoomDir = true;
+	
+	var shouldRotate = false
+	var camRotate = 0.15f
 	
 	fun switchMap(newMap: TiledMap) {
 		tiledMap = newMap
@@ -48,6 +55,24 @@ class LD37 : ApplicationAdapter() {
 			camera.position.y = tiledMap.properties.get("height") as Int * PPM - camera.viewportHeight / 2f
 		if (camBottom < 0)
 			camera.position.y = camera.viewportHeight / 2f
+		
+		if (shouldZoom)
+			when {
+				zoomDir -> {
+					camZoom += 0.0001f
+					if (camZoom > 1f)
+						zoomDir = false
+				}
+				else -> {
+					camZoom -= 0.0001f
+					if (camZoom < 0.95f)
+						zoomDir = true
+				} 
+			}
+		camera.zoom = camZoom
+		
+		if (shouldRotate)
+			camera.rotate(camRotate)
 	}
 
 	override fun create() {
@@ -61,7 +86,7 @@ class LD37 : ApplicationAdapter() {
 		logic.currentRoom.create()
 		switchMap(logic.currentRoom.tiledMap)
 
-		playerRenderer = PlayerViewer()
+		playerRenderer = PlayerRenderer()
 		playerRenderer.create()
 	}
 
@@ -78,9 +103,6 @@ class LD37 : ApplicationAdapter() {
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-		// Late game bullshit
-		// camera.rotate(0.3f)
-		
 		updateCameraPosition()
 		
 		camera.update()
