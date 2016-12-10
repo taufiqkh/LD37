@@ -57,7 +57,7 @@ class LogicEngine {
 		bodyDef.type = BodyDef.BodyType.DynamicBody
 		bodyDef.position.set(0f, 0f)
 		val bounds = PolygonShape()
-		bounds.setAsBox(5f, 5f)
+		bounds.setAsBox(1.5f, 2f)
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = bounds
 		fixtureDef.density = 0.5f
@@ -71,9 +71,9 @@ class LogicEngine {
 	fun createCircle() {
 		val bodyDef: BodyDef = BodyDef()
 		bodyDef.type = BodyDef.BodyType.DynamicBody
-		bodyDef.position.set(100f, 100f)
+		bodyDef.position.set(10f, 10f)
 		val circle: CircleShape = CircleShape()
-		circle.radius = 5f
+		circle.radius = 2f
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = CircleShape()
 		fixtureDef.density = 0.5f
@@ -89,7 +89,7 @@ class LogicEngine {
 		bodyDef.position.set(Vector2(0f, y))
 		val body: Body = world.createBody(bodyDef)
 		val floorBox: PolygonShape = PolygonShape()
-		floorBox.setAsBox(1000f,10f)
+		floorBox.setAsBox(100f, 8f)
 		body.createFixture(floorBox, 0.0f)
 		floorBox.dispose()
 		return body

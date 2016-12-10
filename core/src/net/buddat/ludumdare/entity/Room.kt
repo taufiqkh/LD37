@@ -21,7 +21,6 @@ public class Room(mapFile: String) : Entity() {
 	
 	public fun create() {
 		tiledMap = TmxMapLoader().load(currMapFile)
-		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false // Hide the collision layer
 	}
 	
 	public fun getCollisionLayer(): TiledMapTileLayer {
