@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
+
 import net.buddat.ludumdare.graphics.PlayerRenderer
 import net.buddat.ludumdare.graphics.UIRenderer
 
@@ -18,6 +20,8 @@ class LD37 : ApplicationAdapter() {
 
 	internal lateinit var tiledMap: TiledMap
 	internal lateinit var camera: OrthographicCamera
+	internal lateinit var debugRenderer: Box2DDebugRenderer
+	
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
 	internal lateinit var playerRenderer: PlayerRenderer
 	internal lateinit var uiRenderer: UIRenderer
@@ -37,7 +41,7 @@ class LD37 : ApplicationAdapter() {
 	fun switchMap(newMap: TiledMap) {
 		tiledMap = newMap
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
-		tiledMap.layers.get(1).isVisible = false
+		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
 	}
 	
 	fun updateCameraPosition() {
@@ -93,6 +97,8 @@ class LD37 : ApplicationAdapter() {
 		
 		uiRenderer = UIRenderer()
 		uiRenderer.create()
+		
+		debugRenderer = Box2DDebugRenderer(true, true, true, false, true, false)
 	}
 
 	override fun render() {
@@ -116,6 +122,8 @@ class LD37 : ApplicationAdapter() {
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined
 		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, System.currentTimeMillis() % 2000 > 1000)
+		
+		// debugRenderer.render(World, camera.combined)
 	}
 
 	override fun dispose() {
