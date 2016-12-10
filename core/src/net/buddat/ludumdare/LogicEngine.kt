@@ -3,7 +3,7 @@ package net.buddat.ludumdare
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.physics.box2d.*
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
 import net.buddat.ludumdare.input.InputHandler
@@ -15,26 +15,30 @@ import net.buddat.ludumdare.movement.Speed
  */
 class LogicEngine {
 	val engine: Engine = Engine()
-	val player: PlayerEntity = PlayerEntity()
+	val player: PlayerEntity
 	val inputHandler = InputHandler()
-	
+
+	val world: World = World(Vector2(0f, Speed.gravity), true)
+
 	var currentRoom: Room
-
-	init {
-		currentRoom = Room(Constants.defaultMap)
-		
-		engine.addEntity(currentRoom)
-		engine.addEntity(player)
-	}
-
-	fun getPlayerPosn(): Vector2 {
-		return player.position
-	}
 
 	val floor = 0f
 	val ceiling = 1000f
 	val leftBounds = 0f
 	val rightBounds = 1000f
+
+	init {
+		currentRoom = Room(Constants.defaultMap)
+		player = PlayerEntity(createPlayerBody())
+		engine.addEntity(currentRoom)
+		engine.addEntity(player)
+		createFloor(floor)
+		createCircle()
+	}
+
+	fun getPlayerPosn(): Vector2 {
+		return player.position
+	}
 
 	// Avoid slow spiral of death on slow devices
 	val minFrameTime = 0.25f
@@ -44,6 +48,50 @@ class LogicEngine {
 		val mCalc = MovementCalculator(delta)
 		val movement = mCalc.rawMovement(inputHandler.poll(), player)
 
+
 		player.move(movement, movement.cpy().scl(frameTime))
+	}
+
+	fun createPlayerBody(): Body {
+		val bodyDef: BodyDef = BodyDef()
+		bodyDef.type = BodyDef.BodyType.DynamicBody
+		bodyDef.position.set(0f, 0f)
+		val bounds = PolygonShape()
+		bounds.setAsBox(5f, 5f)
+		val fixtureDef: FixtureDef = FixtureDef()
+		fixtureDef.shape = bounds
+		fixtureDef.density = 0.5f
+		fixtureDef.friction = 0.4f
+		fixtureDef.restitution = 0f
+		val body: Body = world.createBody(bodyDef)
+		body.createFixture(fixtureDef)
+		bounds.dispose()
+		return body
+	}
+	fun createCircle() {
+		val bodyDef: BodyDef = BodyDef()
+		bodyDef.type = BodyDef.BodyType.DynamicBody
+		bodyDef.position.set(100f, 100f)
+		val circle: CircleShape = CircleShape()
+		circle.radius = 5f
+		val fixtureDef: FixtureDef = FixtureDef()
+		fixtureDef.shape = CircleShape()
+		fixtureDef.density = 0.5f
+		fixtureDef.friction = 0.4f
+		fixtureDef.restitution = 0.5f
+		val body: Body = world.createBody(bodyDef)
+		body.createFixture(fixtureDef)
+		circle.dispose()
+	}
+
+	fun createFloor(y: Float): Body {
+		val bodyDef: BodyDef = BodyDef()
+		bodyDef.position.set(Vector2(0f, y))
+		val body: Body = world.createBody(bodyDef)
+		val floorBox: PolygonShape = PolygonShape()
+		floorBox.setAsBox(1000f,10f)
+		body.createFixture(floorBox, 0.0f)
+		floorBox.dispose()
+		return body
 	}
 }

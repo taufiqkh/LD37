@@ -2,11 +2,12 @@ package net.buddat.ludumdare.entity
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
 
 /**
  * Entity representing the player
  */
-class PlayerEntity : Entity() {
+class PlayerEntity(val body: Body) : Entity() {
 	private val _position = Vector2()
 	val position: Vector2
 		get() = _position.cpy()
