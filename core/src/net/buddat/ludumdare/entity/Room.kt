@@ -28,7 +28,7 @@ public class Room(mapFile: String) : Entity() {
 	}
 	
 	public fun getCollisionObjects(): MapObjects {
-		return getCollisionLayer().objects
+		return tiledMap.layers.get(Constants.collisionsLayer).objects
 	}
 	
 }

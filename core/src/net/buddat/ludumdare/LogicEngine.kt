@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.maps.objects.RectangleMapObject
+
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
 import net.buddat.ludumdare.input.InputHandler
@@ -32,8 +34,29 @@ class LogicEngine {
 		player = PlayerEntity(createPlayerBody())
 		engine.addEntity(currentRoom)
 		engine.addEntity(player)
-		createFloor(floor)
+		//createFloor(floor)
 		//createCircle()
+	}
+	
+	public fun create() {
+		currentRoom.create()
+		
+		for (mapObject in currentRoom.getCollisionObjects()) {
+			if (mapObject is RectangleMapObject) {
+				val bodyDef: BodyDef = BodyDef()
+				val xPos = mapObject.rectangle.x / Constants.PPM + mapObject.rectangle.width / Constants.PPM / 2f
+				val yPos = mapObject.rectangle.y / Constants.PPM + mapObject.rectangle.height / Constants.PPM / 2f
+				bodyDef.position.set(Vector2(xPos, yPos))
+				val body: Body = world.createBody(bodyDef)
+				val floorBox: PolygonShape = PolygonShape()
+				floorBox.setAsBox(mapObject.rectangle.width / Constants.PPM / 2f, mapObject.rectangle.height / Constants.PPM / 2f)
+				val fixtureDef: FixtureDef = FixtureDef()
+				fixtureDef.shape = floorBox
+				fixtureDef.friction = 2f
+				body.createFixture(fixtureDef)
+				floorBox.dispose()
+			}
+		}
 	}
 
 	fun getPlayerPosn(): Vector2 {
@@ -64,7 +87,7 @@ class LogicEngine {
 	fun createPlayerBody(): Body {
 		val bodyDef: BodyDef = BodyDef()
 		bodyDef.type = BodyDef.BodyType.DynamicBody
-		bodyDef.position.set(0f, 10f)
+		bodyDef.position.set(2f, 6f)
 		bodyDef.fixedRotation = true
 		val bounds = PolygonShape()
 		bounds.setAsBox(0.5f, 1f)

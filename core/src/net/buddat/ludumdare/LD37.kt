@@ -32,8 +32,8 @@ class LD37 : ApplicationAdapter() {
 	var renderY = 0f
 	
 	var shouldZoom = false
-	var camZoom = 1f;
-	var zoomDir = true;
+	var camZoom = 1f
+	var zoomDir = true
 	
 	var shouldRotate = false
 	var camRotate = 0.15f
@@ -89,7 +89,7 @@ class LD37 : ApplicationAdapter() {
 		camera.setToOrtho(false, w, h)
 		camera.update()
 
-		logic.currentRoom.create()
+		logic.create()
 		switchMap(logic.currentRoom.tiledMap)
 
 		playerRenderer = PlayerRenderer()
