@@ -63,7 +63,7 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer.setView(camera)
 		tiledMapRenderer.render()
 
-		playerRenderer.render(logic.getPlayerPosn().x * 10f, logic.getPlayerPosn().y * 10f)
+		playerRenderer.render(logic.getPlayerPosn().x * 32f, logic.getPlayerPosn().y * 32f, System.currentTimeMillis() % 2000 > 1000)
 	}
 
 	override fun dispose() {

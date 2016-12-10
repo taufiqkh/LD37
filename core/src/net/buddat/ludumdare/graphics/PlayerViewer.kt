@@ -52,7 +52,7 @@ class PlayerViewer {
 		spriteBatch = SpriteBatch()
 	}
 	
-	fun render(x: Float, y: Float) {
+	fun render(x: Float, y: Float, reverse: Boolean) {
 		stateTime += Gdx.graphics.deltaTime
 		
 		currentFrame = when(currentState) {
@@ -63,8 +63,13 @@ class PlayerViewer {
 		}
 		
 		spriteBatch.begin()
+		if (reverse)
+			currentFrame.flip(true, false)
 		spriteBatch.draw(currentFrame, x, y)
 		spriteBatch.end()
+		
+		if (reverse)
+			currentFrame.flip(true, false)
 	}
 	
 	fun dispose() {
