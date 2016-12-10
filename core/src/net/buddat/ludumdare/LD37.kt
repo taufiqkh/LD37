@@ -9,10 +9,10 @@ import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.Input.*
 
 class LD37 : ApplicationAdapter() {
-	
+
 	private val logic: LogicEngine
 	private val logicThread: Thread
-	
+
 	init {
 		logic = LogicEngine()
 		logicThread = Thread(logic)
@@ -23,7 +23,7 @@ class LD37 : ApplicationAdapter() {
     internal lateinit var img: Texture
 	
 	var running = false
-
+	
 	var renderX = 0f
 	var renderY = 0f
 	
@@ -35,7 +35,7 @@ class LD37 : ApplicationAdapter() {
         img = Texture("badlogic.jpg")
     }
 
-    override fun render() {
+	override fun render() {
 		running = true
 		checkInput()
 		
@@ -62,5 +62,4 @@ class LD37 : ApplicationAdapter() {
 			input.isKeyPressed(Keys.DOWN) -> renderY -= delta / movementSpeed
 		}
 	}
-	
 }
