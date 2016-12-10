@@ -4,7 +4,7 @@ import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
-import com.badlogic.gdx.maps.tiled.renderers.*
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import net.buddat.ludumdare.graphics.PlayerViewer
 
 class LD37 : ApplicationAdapter() {
@@ -24,11 +24,30 @@ class LD37 : ApplicationAdapter() {
 
 	var renderX = 0f
 	var renderY = 0f
-
+	
 	fun switchMap(newMap: TiledMap) {
 		tiledMap = newMap
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
 		tiledMap.layers.get(1).isVisible = false
+	}
+	
+	fun updateCameraPosition() {
+		camera.position.set(logic.getPlayerPosn().x * PPM + width / 5,
+				logic.getPlayerPosn().y * PPM, 0f)
+		
+		val camLeft = camera.position.x - camera.viewportWidth / 2f
+		val camRight = camera.position.x + camera.viewportWidth / 2f
+		val camTop = camera.position.y + camera.viewportHeight / 2f
+		val camBottom = camera.position.y - camera.viewportHeight / 2f
+		
+		if (camLeft < 0)
+			camera.position.x = camera.viewportWidth / 2f
+		if (camRight > tiledMap.properties.get("width") as Int * PPM)
+			camera.position.x = tiledMap.properties.get("width") as Int * PPM - camera.viewportWidth / 2f
+		if (camTop > tiledMap.properties.get("height") as Int * PPM)
+			camera.position.y = tiledMap.properties.get("height") as Int * PPM - camera.viewportHeight / 2f
+		if (camBottom < 0)
+			camera.position.y = camera.viewportHeight / 2f
 	}
 
 	override fun create() {
@@ -59,10 +78,16 @@ class LD37 : ApplicationAdapter() {
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
+		// Late game bullshit
+		// camera.rotate(0.3f)
+		
+		updateCameraPosition()
+		
 		camera.update()
 		tiledMapRenderer.setView(camera)
 		tiledMapRenderer.render()
 
+		playerRenderer.spriteBatch.projectionMatrix = camera.combined
 		playerRenderer.render(logic.getPlayerPosn().x * 32f, logic.getPlayerPosn().y * 32f, System.currentTimeMillis() % 2000 > 1000)
 	}
 
