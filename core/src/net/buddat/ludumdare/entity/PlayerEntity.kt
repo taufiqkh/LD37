@@ -12,7 +12,7 @@ class PlayerEntity : Entity() {
 	val velocity = Vector2()
 		get() = field.cpy()
 
-	fun move(movement: Vector2) {
+	public fun move(movement: Vector2) {
 		position.add(movement)
 	}
 }
