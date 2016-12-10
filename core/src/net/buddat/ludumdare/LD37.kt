@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.*
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.*
 import net.buddat.ludumdare.input.InputHandler
+import net.buddat.ludumdare.graphics.PlayerViewer
 
 class LD37 : ApplicationAdapter(), InputProcessor {
 
@@ -18,11 +19,10 @@ class LD37 : ApplicationAdapter(), InputProcessor {
 		logic = LogicEngine()
 	}
 	
-    internal lateinit var batch: SpriteBatch
-    internal lateinit var img: Texture
 	internal lateinit var tiledMap: TiledMap
 	internal lateinit var camera: OrthographicCamera
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
+	internal lateinit var playerRenderer: PlayerViewer
 	
 	var running = false
 	
@@ -46,8 +46,8 @@ class LD37 : ApplicationAdapter(), InputProcessor {
 		switchMap("testingMap.tmx")
 		Gdx.input.inputProcessor = this
 		
-        batch = SpriteBatch()
-        img = Texture("badlogic.jpg")
+		playerRenderer = PlayerViewer()
+		playerRenderer.create()
     }
 
 	override fun render() {
@@ -61,15 +61,12 @@ class LD37 : ApplicationAdapter(), InputProcessor {
 		tiledMapRenderer.setView(camera)
 		tiledMapRenderer.render()
 		
-        batch.begin()
-        batch.draw(img, renderX, renderY)
-        batch.end()
+		playerRenderer.render(400f, 300f)
     }
 	
     override fun dispose() {
-        batch.dispose()
-        img.dispose()
 		tiledMap.dispose()
+		playerRenderer.dispose()
     }
 	
 	override fun keyDown(keycode: Int): Boolean {
