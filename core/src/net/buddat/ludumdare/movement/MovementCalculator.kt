@@ -21,6 +21,7 @@ class MovementCalculator(val delta: Float) {
 				player.isMoving = true
 				val impulse = if (right) horizontalImpulse
 				else -horizontalImpulse
+				player.movementDirLeft = impulse < 0
 				player.body.applyLinearImpulse(impulse, 0f, bodyPosn.x, bodyPosn.y, true)
 			}
 		} else if (velX == 0f) {
@@ -30,7 +31,7 @@ class MovementCalculator(val delta: Float) {
 
 	fun applyVerticalImpulse(jump: Boolean, player: PlayerEntity) {
 		val velY = player.body.linearVelocity.y
-		if (jump && velY == 0f) {
+		if (jump && velY <= 0.01f && velY >= -0.01f) {
 			val bodyPosn = player.body.position
 			player.body.applyLinearImpulse(0f, jumpSpeed, bodyPosn.x, bodyPosn.y, true)
 		}

@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 
 import net.buddat.ludumdare.graphics.PlayerRenderer
+import net.buddat.ludumdare.graphics.AnimationState
 import net.buddat.ludumdare.graphics.UIRenderer
 
 class LD37 : ApplicationAdapter() {
@@ -121,7 +122,13 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer.render()
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined
-		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, System.currentTimeMillis() % 2000 > 1000)
+		playerRenderer.currentState = when {
+			logic.player.body.linearVelocity.y >= 0.01f -> AnimationState.JUMPING
+			logic.player.body.linearVelocity.y <= -0.01f -> AnimationState.JUMPING
+			logic.player.body.linearVelocity.x != 0f -> AnimationState.RUNNING
+			else -> AnimationState.IDLE
+		}
+		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
 		
 		debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
 		

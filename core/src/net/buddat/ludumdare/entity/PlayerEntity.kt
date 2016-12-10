@@ -13,6 +13,7 @@ class PlayerEntity(val body: Body) : Entity() {
 
 	var isAirborne: Boolean = false
 	var isMoving: Boolean = false
+	var movementDirLeft: Boolean = false
 	var isLanding: Boolean = false
 	var isIdle: Boolean = true
 }
