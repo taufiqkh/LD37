@@ -6,7 +6,7 @@ import com.badlogic.gdx.Input
 /**
  * Checks relevant input for provision eg. to a movement controller
  */
-class InputHandler(val keyMapping: KeyMappingConfig) {
+class InputHandler(val keyMapping: KeyMappingConfig = KeyMappingConfig()) {
 	data class InputResult(val up: Boolean, val down: Boolean,
 						   val left: Boolean, val right: Boolean,
 						   val jump: Boolean)

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.Input.*
+import net.buddat.ludumdare.input.InputHandler
 
 class LD37 : ApplicationAdapter() {
 
@@ -51,12 +52,15 @@ class LD37 : ApplicationAdapter() {
 	private fun checkInput() {
 		var delta = if (lastChecked == 0L) 0L else System.currentTimeMillis() - lastChecked
 		lastChecked = System.currentTimeMillis()
-		
+
+		val inputHandler = InputHandler()
+		val (up, down, left, right, jump) = inputHandler.poll()
 		when {
-			input.isKeyPressed(Keys.RIGHT) -> renderX += delta / movementSpeed
-			input.isKeyPressed(Keys.LEFT) -> renderX -= delta / movementSpeed
-			input.isKeyPressed(Keys.UP) -> renderY += delta / movementSpeed
-			input.isKeyPressed(Keys.DOWN) -> renderY -= delta / movementSpeed
+			right -> renderX += delta / movementSpeed
+			left -> renderX -= delta / movementSpeed
+			up -> renderY += delta / movementSpeed
+			down -> renderY -= delta / movementSpeed
+			// jump?
 		}
 	}
 }
