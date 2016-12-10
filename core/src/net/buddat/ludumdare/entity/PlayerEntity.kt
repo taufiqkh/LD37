@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector2
  * Entity representing the player
  */
 class PlayerEntity : Entity() {
-	val position = Vector2()
+	var position = Vector2()
 		get() = field.cpy()
 	val velocity = Vector2()
 		get() = field.cpy()
 
 	public fun move(movement: Vector2) {
-		position.add(movement)
+		position = position.add(movement)
 	}
 }
