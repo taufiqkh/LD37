@@ -6,7 +6,6 @@ sourceCompatibility = 1.6
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-
 eclipse.project {
     name = appName + "-core"
 }
@@ -24,7 +23,9 @@ repositories {
 }
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "junit:junit:4.12"
 }
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += "test/kotlin"
 }

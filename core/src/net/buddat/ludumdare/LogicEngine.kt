@@ -3,9 +3,12 @@ package net.buddat.ludumdare
 import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.World
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
 import net.buddat.ludumdare.input.InputHandler
+import net.buddat.ludumdare.movement.MovementCalculator
+import net.buddat.ludumdare.movement.Speed
 
 /**
  * Powers the entity handling
@@ -28,31 +31,19 @@ class LogicEngine {
 		return player.position
 	}
 
-	val movementSpeed = 10f
-
 	val floor = 0f
 	val ceiling = 1000f
 	val leftBounds = 0f
 	val rightBounds = 1000f
 
+	// Avoid slow spiral of death on slow devices
+	val minFrameTime = 0.25f
+
 	fun update(delta: Float) {
-		val (up, down, left, right, jump) = inputHandler.poll()
+		val frameTime = Math.min(delta, minFrameTime)
+		val mCalc = MovementCalculator(delta)
+		val movement = mCalc.rawMovement(inputHandler.poll(), player)
 
-		// base movement
-		val rawXMovement = if (right && !left) movementSpeed
-			else if (left && !right) -movementSpeed
-			else 0f
-		val rawYMovement = if (up && !down) movementSpeed
-			else if (down && !up) -movementSpeed
-			else 0f
-
-		// check bounds
-		val yMovement = MathUtils.clamp(rawYMovement, floor, ceiling)
-		val xMovement = MathUtils.clamp(rawXMovement, leftBounds, rightBounds)
-
-		// as speed is per second, scale the speed according to the delta
-		val movement = Vector2(xMovement, yMovement).scl(delta)
-
-		player.move(movement)
+		player.move(movement, movement.cpy().scl(frameTime))
 	}
 }
