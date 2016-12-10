@@ -88,7 +88,7 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer.render()
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined
-		playerRenderer.render(logic.getPlayerPosn().x * 32f, logic.getPlayerPosn().y * 32f, System.currentTimeMillis() % 2000 > 1000)
+		playerRenderer.render(logic.getPlayerPosn().x * PPM, logic.getPlayerPosn().y * PPM, System.currentTimeMillis() % 2000 > 1000)
 	}
 
 	override fun dispose() {
