@@ -7,16 +7,15 @@ import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.Input.*
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.*
+import net.buddat.ludumdare.input.InputHandler
 
 class LD37 : ApplicationAdapter(), InputProcessor {
 
 	private val logic: LogicEngine
-	private val logicThread: Thread
+	val inputHandler = InputHandler()
 
 	init {
 		logic = LogicEngine()
-		logicThread = Thread(logic)
-		logicThread.start()
 	}
 	
     internal lateinit var batch: SpriteBatch
@@ -90,10 +89,6 @@ class LD37 : ApplicationAdapter(), InputProcessor {
             tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
         if(keycode == Input.Keys.NUM_2)
             tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
-		
-		when {
-			keycode == Input.Keys.B -> switchMap("testingMap2.tmx")
-		}
 		
         return false;
     }
