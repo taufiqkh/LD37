@@ -39,6 +39,7 @@ class LD37 : ApplicationAdapter() {
 		camera.setToOrtho(false, w, h)
 		camera.update()
 
+		logic.currentRoom.create()
 		switchMap(logic.currentRoom.tiledMap)
 
 		playerRenderer = PlayerViewer()

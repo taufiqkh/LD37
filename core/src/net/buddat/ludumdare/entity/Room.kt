@@ -5,14 +5,19 @@ import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 
-class Room(mapFile: String) : Entity() {
+public class Room(mapFile: String) : Entity() {
 	
 	val walls: MutableList<Wall> = mutableListOf()
-	
-	public val tiledMap: TiledMap
+	var currMapFile: String
 	
 	init {
-		tiledMap = TmxMapLoader().load(mapFile)
+		currMapFile = mapFile
+	}
+	
+	lateinit var tiledMap: TiledMap
+	
+	public fun create() {
+		tiledMap = TmxMapLoader().load(currMapFile)
 		tiledMap.layers.get(1).isVisible = false // Hide the collision layer
 	}
 	
