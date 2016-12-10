@@ -124,6 +124,8 @@ class LD37 : ApplicationAdapter() {
 		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, System.currentTimeMillis() % 2000 > 1000)
 		
 		debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
+		
+		uiRenderer.render()
 	}
 
 	override fun dispose() {
