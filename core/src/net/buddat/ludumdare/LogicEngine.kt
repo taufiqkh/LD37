@@ -18,7 +18,7 @@ class LogicEngine {
 	val player: PlayerEntity
 	val inputHandler = InputHandler()
 
-	val world: World = World(Vector2(0f, Speed.gravity), true)
+	val world: World = World(Vector2(0f, -Speed.gravity), true)
 
 	var currentRoom: Room
 
@@ -64,7 +64,7 @@ class LogicEngine {
 	fun createPlayerBody(): Body {
 		val bodyDef: BodyDef = BodyDef()
 		bodyDef.type = BodyDef.BodyType.DynamicBody
-		bodyDef.position.set(0f, 0f)
+		bodyDef.position.set(0f, 10f)
 		val bounds = PolygonShape()
 		bounds.setAsBox(1.5f, 2f)
 		val fixtureDef: FixtureDef = FixtureDef()
