@@ -71,7 +71,7 @@ class LogicEngine {
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = bounds
 		fixtureDef.density = 1f
-		fixtureDef.friction = 2f
+		fixtureDef.friction = 30f
 		fixtureDef.restitution = 0f
 		val body: Body = world.createBody(bodyDef)
 		body.createFixture(fixtureDef)
@@ -102,7 +102,7 @@ class LogicEngine {
 		floorBox.setAsBox(100f, 8f)
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = floorBox
-		fixtureDef.friction = 10f
+		fixtureDef.friction = 20f
 		body.createFixture(fixtureDef)
 		floorBox.dispose()
 		return body

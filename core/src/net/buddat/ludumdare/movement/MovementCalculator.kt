@@ -12,22 +12,30 @@ import net.buddat.ludumdare.movement.Speed.movementSpeed
  * Calculates movement based on a delta
  */
 class MovementCalculator(val delta: Float) {
-	fun rawMovement(input: InputHandler.InputResult, player: PlayerEntity) {
-		val (up, down, left, right, jump) = input
-		// base movement
-		val bodyPosn = player.body.position
+	fun applyHorizonalImpulse(left: Boolean, right: Boolean, player: PlayerEntity) {
 		val velX = player.body.linearVelocity.x
 		if (right xor left) {
+			val bodyPosn = player.body.position
 			if (right && velX < Speed.maxHorzVelocity ||
-				left && velX > -Speed.maxHorzVelocity) {
+					left && velX > -Speed.maxHorzVelocity) {
 				player.isMoving = true
 				val impulse = if (right) horizontalImpulse
-					else -horizontalImpulse
+				else -horizontalImpulse
 				player.body.applyLinearImpulse(impulse, 0f, bodyPosn.x, bodyPosn.y, true)
 			}
 		} else if (velX == 0f) {
 			player.isMoving = false;
 		}
+	}
+
+	fun applyVerticalImpulse(jump: Boolean, player: PlayerEntity) {
+	}
+
+	fun rawMovement(input: InputHandler.InputResult, player: PlayerEntity) {
+		val (up, down, left, right, jump) = input
+		// base movement
+		applyHorizonalImpulse(left, right, player)
+		applyVerticalImpulse(jump, player)
 
 		var yMovement = calcRawYMovement(input, player)
 
