@@ -15,7 +15,7 @@ import net.buddat.ludumdare.entity.Room
 
 class ObjectRenderer : LogicEngine.CandyRemovalListener {
 	override fun onCandyRemoval(candy: Candy) {
-		print("omnomnom")
+		println("omnomnom")
 	}
 
 	lateinit var batch: SpriteBatch
