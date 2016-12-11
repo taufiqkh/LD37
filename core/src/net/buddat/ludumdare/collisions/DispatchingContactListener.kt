@@ -22,8 +22,8 @@ class DispatchingContactListener() : ContactListener {
 		val (obj, player) =
 				Types.matchPair<ContactableEntity, PlayerEntity>(fixtureA, fixtureB)?: return
 		when(obj) {
-			is Candy -> player.startContact(obj)
-			is Killer -> player.startContact(obj)
+			is Candy -> player.startContact(obj as Candy)
+			is Killer -> player.startContact(obj as Killer)
 			else -> player.startContact(obj)
 		}
 	}
