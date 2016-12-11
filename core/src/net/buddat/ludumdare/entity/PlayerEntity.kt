@@ -30,7 +30,7 @@ class PlayerEntity(val body: Body, val feet: Fixture) : Entity() {
 
 	fun startContact(candy: Candy) {
 		if (!candy.isEaten) {
-			println("Candyyyyyy")
+			println(candy.candyEffectType)
 			candy.isEaten = true
 		}
 	}

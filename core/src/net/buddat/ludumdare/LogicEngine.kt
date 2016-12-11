@@ -113,7 +113,7 @@ class LogicEngine {
 					val effect = if (effectVal is String) {
 						CandyEffectType.valueOf(effectVal)
 					} else {
-						println("Effect $effectVal isn't a string wtf")
+						if (effectVal != null) println("Effect $effectVal isn't a string wtf")
 						CandyEffectType.NO_EFFECT
 					}
 					val candy = Candy(it, body, effect)
