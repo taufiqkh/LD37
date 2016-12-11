@@ -123,7 +123,7 @@ class LogicEngine {
 			world.step(timeStep, velocityIterations, positionIterations)
 			accumulator -= timeStep
 			val mCalc = MovementCalculator()
-			val (jumpedFrom, landed) = mCalc.rawMovement(inputHandler.poll(), player)
+			val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
 			val eatenCandies = currentRoom.candies.filter { it.isEaten }
 			eatenCandies.forEach {
 				currentRoom.candies.remove(it)
@@ -144,6 +144,10 @@ class LogicEngine {
 			} else if (jumpedFrom != null) {
 				for (listener in jumpListeners) {
 					listener.onJump(player, jumpedFrom)
+				}
+			} else if (landedOn != null) {
+				for (listener in landListeners) {
+					listener.onLand(player, landedOn)
 				}
 			}
 		}
