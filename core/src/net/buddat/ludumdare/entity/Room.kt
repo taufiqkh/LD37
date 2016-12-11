@@ -9,7 +9,7 @@ import net.buddat.ludumdare.Constants
 
 public class Room(mapFile: String) : Entity() {
 	
-	val walls: MutableList<Wall> = mutableListOf()
+	val fixedBlocks: MutableList<FixedBlock> = mutableListOf()
 	var currMapFile: String
 	
 	init {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import net.buddat.ludumdare.collisions.DispatchingContactListener
 import net.buddat.ludumdare.entity.Candy
+import net.buddat.ludumdare.entity.FixedBlock
 
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
@@ -80,6 +81,7 @@ class LogicEngine {
 				fixtureDef.shape = floorBox
 				fixtureDef.friction = 2f
 				body.createFixture(fixtureDef)
+				body.userData = FixedBlock(body)
 				floorBox.dispose()
 			}
 		}
