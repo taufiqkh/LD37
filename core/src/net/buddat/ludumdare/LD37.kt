@@ -2,12 +2,15 @@ package net.buddat.ludumdare
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
+import com.badlogic.gdx.graphics.glutils.FrameBuffer
+import com.badlogic.gdx.graphics.Pixmap.Format
 
 import net.buddat.ludumdare.graphics.PlayerRenderer
 import net.buddat.ludumdare.graphics.AnimationState
@@ -33,14 +36,19 @@ class LD37 : ApplicationAdapter() {
 	
 	internal lateinit var debugRenderer: Box2DDebugRenderer
 	
-	internal lateinit var tiledMapRenderer: TiledMapRenderer
+	internal lateinit var tiledMapRenderer: OrthogonalTiledMapRenderer
 	internal lateinit var playerRenderer: PlayerRenderer
 	internal lateinit var uiRenderer: UIRenderer
 	internal lateinit var objectRenderer: ObjectRenderer
 	
 	internal lateinit var audioHandler: AudioHandler
 	
-	internal lateinit var shader: ShaderProgram
+	internal lateinit var shaderBg: ShaderProgram
+	internal lateinit var shaderMap: ShaderProgram
+	
+	internal lateinit var mapFbo: FrameBuffer
+	internal lateinit var fboRegion: TextureRegion
+	internal lateinit var fboBatch: SpriteBatch
 
 	var running = false
 
@@ -59,10 +67,14 @@ class LD37 : ApplicationAdapter() {
 	var backgroundRotateDir = true
 	var backgroundRotateCap: Float = 0.05f
 	
+	var startTime = System.currentTimeMillis()
+	
 	fun switchMap(newMap: TiledMap) {
 		tiledMap = newMap
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
+		// tiledMapRenderer.batch.shader = shaderMap
 		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
+		
 		
 		val backgroundImg = tiledMap.layers.get(0).name
 		backgroundImage = Texture(Gdx.files.internal(backgroundImg))
@@ -124,9 +136,12 @@ class LD37 : ApplicationAdapter() {
 		backgroundCamera.setToOrtho(false, w, h)
 		backgroundCamera.update()
 		
-		shader = ShaderProgram(Gdx.files.internal("shaders/testShad0.vert").readString(), Gdx.files.internal("shaders/testShad0.frag").readString())
+		shaderBg = ShaderProgram(Gdx.files.internal("shaders/testShad0.vert").readString(), Gdx.files.internal("shaders/testShad0.frag").readString())
 		backgroundSpritebatch = SpriteBatch()
-		backgroundSpritebatch.shader = shader
+		backgroundSpritebatch.shader = shaderBg
+		
+		shaderMap = ShaderProgram(Gdx.files.internal("shaders/testShad0.vert").readString(), Gdx.files.internal("shaders/testShad1.frag").readString())
+		println(shaderMap.log)
 		
 		logic.create()
 		
@@ -144,6 +159,13 @@ class LD37 : ApplicationAdapter() {
 		logic.addCandyRemovalListener(audioHandler)
 		logic.addJumpListener(audioHandler)
 		logic.addLandListener(audioHandler)
+		
+		mapFbo = FrameBuffer(Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
+		fboRegion = TextureRegion(mapFbo.colorBufferTexture, 0, 0, Gdx.graphics.width, Gdx.graphics.height)
+		fboRegion.flip(false, true)
+		
+		fboBatch = SpriteBatch()
+		fboBatch.shader = shaderMap
 
 		switchMap(logic.currentRoom.tiledMap)
 
@@ -164,6 +186,7 @@ class LD37 : ApplicationAdapter() {
 			switchMap(logic.currentRoom.tiledMap)
 		}
 
+		mapFbo.begin()
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -173,7 +196,7 @@ class LD37 : ApplicationAdapter() {
 		backgroundCamera.update()
 		backgroundSpritebatch.projectionMatrix = backgroundCamera.combined
 		backgroundSpritebatch.begin()
-		shader.setUniformf("angle", backgroundRotate)
+		shaderBg.setUniformf("angle", backgroundRotate)
 		backgroundSpritebatch.draw(backgroundImage, -500f, -500f)
 		backgroundSpritebatch.end()
 		
@@ -192,6 +215,13 @@ class LD37 : ApplicationAdapter() {
 		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
 		
 		debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
+		
+		mapFbo.end()
+		
+		fboBatch.begin()
+		fboBatch.shader.setUniformf("time", (System.currentTimeMillis() - startTime) / 1000f)
+		fboBatch.draw(fboRegion, 0f, 0f)
+		fboBatch.end()
 		
 		uiRenderer.render()
 		
