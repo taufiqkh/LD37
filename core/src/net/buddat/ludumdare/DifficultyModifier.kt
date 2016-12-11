@@ -21,7 +21,6 @@ class DifficultyModifier {
 	var totalRotation = 0f
 	
 	fun applyBackgroundDifficulty(diff: Float, shader: ShaderProgram) {
-		println(diff)
 		when {
 			diff <= 1.0f -> shader.setUniformf("angle", baseAngle)
 			diff > 1.0f && diff < 5.0f -> {

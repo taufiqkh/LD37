@@ -59,7 +59,7 @@ class LD37 : ApplicationAdapter() {
 	
 	var switchingMap = false
 	var mapSwitchDir = true
-	var mapSwitchAngleChange = 0.01f
+	var mapSwitchAngleChange = 0.1f
 	var mapSwitchCurrAngle = 0f
 	var mapSwitchAngleMax = mapSwitchAngleChange * 30f
 	
