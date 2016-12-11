@@ -1,10 +1,10 @@
 package net.buddat.ludumdare
 
 import com.badlogic.ashley.core.Engine
-import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
+import com.badlogic.gdx.utils.Array as GdxArray
 import net.buddat.ludumdare.collisions.DispatchingContactListener
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.entity.FixedBlock
@@ -14,25 +14,25 @@ import net.buddat.ludumdare.entity.Room
 import net.buddat.ludumdare.input.InputHandler
 import net.buddat.ludumdare.movement.MovementCalculator
 import net.buddat.ludumdare.movement.Speed
-import java.util.*
 
 /**
  * Powers the entity handling
  */
 class LogicEngine {
 	val engine: Engine = Engine()
-	val player: PlayerEntity
+	lateinit var player: PlayerEntity
 	val inputHandler = InputHandler()
 
-	val world: World = World(Vector2(0f, -Speed.gravity), true)
+	lateinit var world: World
 
-	var currentRoom: Room
+	lateinit var currentRoom: Room
 
 	val rooms: MutableList<String> = mutableListOf(
-			Constants.defaultMap
+			Constants.defaultMap,
+			"level1.tmx"
 	)
 
-	var nextMap = rooms.first()
+	lateinit var nextMap: String
 
 	//Event Listeners
 	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
@@ -44,11 +44,6 @@ class LogicEngine {
 	private val landListeners: MutableList<LandListener> = mutableListOf()
 
 	var finished = false
-
-	init {
-		currentRoom = Room(nextMap)
-		player = createPlayer()
-	}
 
 	fun calcXPos(mapObject: RectangleMapObject): Float {
 		return mapObject.rectangle.x / Constants.PPM + mapObject.rectangle.width / Constants.PPM / 2f
@@ -83,7 +78,12 @@ class LogicEngine {
 	fun create() {
 		nextMap = rooms.first()
 		rooms.removeAt(0)
+		currentRoom = Room(nextMap)
 		currentRoom.create()
+
+		world = World(Vector2(0f, -Speed.gravity), true)
+		player = createPlayer()
+
 		val spawn = currentRoom.getSpawnObjects().first() as RectangleMapObject
 		player.body.position.set(spawn.rectangle.x, spawn.rectangle.y)
 
@@ -180,6 +180,12 @@ class LogicEngine {
 		player.isRunning = false
 		player.body.angularVelocity = 0f
 		player.body.linearVelocity.set(0f, 0f)
+		val bodies = GdxArray<Body>(world.bodyCount)
+		world.getBodies(bodies)
+		for (body in bodies) {
+			world.destroyBody(body)
+		}
+		world.dispose()
 	}
 
 	fun createPlayer(): PlayerEntity {
