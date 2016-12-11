@@ -18,7 +18,9 @@ class CandyContactListener(candies: MapObjects) : ContactListener {
 		if (contact == null) return
 		val (candy: Candy, player: PlayerEntity) = Types.matchPair<Candy, PlayerEntity>(
 				contact.fixtureA, contact.fixtureB) ?: return
-		player.startContact(candy)
+		if (!candy.isEaten) {
+			player.startContact(candy)
+		}
 	}
 
 	override fun preSolve(contact: Contact?, oldManifold: Manifold?) {

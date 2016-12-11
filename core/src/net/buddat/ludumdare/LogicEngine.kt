@@ -82,8 +82,9 @@ class LogicEngine {
 		candyObjects
 				.filterIsInstance<RectangleMapObject>()
 				.forEach {
-					val candy = Candy(it)
-					createBoxSensor(it).userData = candy
+					val body = createBoxSensor(it)
+					val candy = Candy(it, body)
+					body.userData = candy
 					currentRoom.candies.add(candy)
 				}
 		world.setContactListener(CandyContactListener(candyObjects))
@@ -110,6 +111,11 @@ class LogicEngine {
 			accumulator -= timeStep
 			val mCalc = MovementCalculator()
 			mCalc.rawMovement(inputHandler.poll(), player)
+			val eatenCandies = currentRoom.candies.filter { it.isEaten }
+			eatenCandies.forEach {
+				currentRoom.candies.remove(it)
+				world.destroyBody(it.body)
+			}
 		}
 	}
 
