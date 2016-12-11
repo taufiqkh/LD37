@@ -1,6 +1,5 @@
-package net.buddat.ludumdare
+package net.buddat.ludumdare.collisions
 
-import com.badlogic.gdx.maps.MapObjects
 import com.badlogic.gdx.physics.box2d.*
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.entity.PlayerEntity
@@ -9,7 +8,7 @@ import net.buddat.ludumdare.util.Types
 /**
  * Listener for candy collisions
  */
-class CandyContactListener(candies: MapObjects) : ContactListener {
+class CandyContactListener() : ContactListener {
 	override fun endContact(contact: Contact?) {
 
 	}
