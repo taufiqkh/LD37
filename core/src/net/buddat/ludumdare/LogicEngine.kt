@@ -1,7 +1,6 @@
 package net.buddat.ludumdare
 
 import com.badlogic.ashley.core.Engine
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -24,18 +23,11 @@ class LogicEngine {
 
 	var currentRoom: Room
 
-	val floor = 0f
-	val ceiling = 1000f
-	val leftBounds = 0f
-	val rightBounds = 1000f
-
 	init {
 		currentRoom = Room(Constants.defaultMap)
 		player = PlayerEntity(createPlayerBody())
 		engine.addEntity(currentRoom)
 		engine.addEntity(player)
-		//createFloor(floor)
-		//createCircle()
 	}
 	
 	fun create() {
@@ -121,24 +113,6 @@ class LogicEngine {
 
 		bounds.dispose()
 		feetBounds.dispose()
-		return body
-	}
-
-	fun createPlayerFeetBody(): Body {
-		val bodyDef: BodyDef = BodyDef()
-		bodyDef.type = BodyDef.BodyType.DynamicBody
-		bodyDef.position.set(2f, 6f)
-		bodyDef.fixedRotation = true
-		val bounds = PolygonShape()
-		bounds.setAsBox(0.4f, 0.8f)
-		val fixtureDef: FixtureDef = FixtureDef()
-		fixtureDef.shape = bounds
-		fixtureDef.density = 1f
-		fixtureDef.friction = 3f
-		fixtureDef.restitution = 0f
-		val body: Body = world.createBody(bodyDef)
-		body.createFixture(fixtureDef)
-		bounds.dispose()
 		return body
 	}
 }
