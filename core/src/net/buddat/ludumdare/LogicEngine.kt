@@ -43,20 +43,24 @@ class LogicEngine {
 
 	var finished = false
 
+	fun toWorldCoords(coord: Float): Float {
+		return coord / Constants.PPM
+	}
+
 	fun calcXPos(mapObject: RectangleMapObject): Float {
-		return mapObject.rectangle.x / Constants.PPM + mapObject.rectangle.width / Constants.PPM / 2f
+		return toWorldCoords(mapObject.rectangle.x + mapObject.rectangle.width / 2f)
 	}
 
 	fun calcYPos(mapObject: RectangleMapObject): Float {
-		return mapObject.rectangle.y / Constants.PPM + mapObject.rectangle.height / Constants.PPM / 2f
+		return toWorldCoords(mapObject.rectangle.y + mapObject.rectangle.height / 2f)
 	}
 
 	fun calcHalfWidth(mapObject: RectangleMapObject): Float {
-		return mapObject.rectangle.width / Constants.PPM / 2f
+		return toWorldCoords(mapObject.rectangle.width / 2f)
 	}
 
 	fun calcHalfHeight(mapObject: RectangleMapObject): Float {
-		return mapObject.rectangle.height / Constants.PPM / 2f
+		return toWorldCoords(mapObject.rectangle.height / 2f)
 	}
 
 	fun createBoxSensor(mapObject: RectangleMapObject): Body {
@@ -80,10 +84,8 @@ class LogicEngine {
 		currentRoom.create()
 
 		world = World(Vector2(0f, -Speed.gravity), true)
-		player = createPlayer()
-
 		val spawn = currentRoom.getSpawnObjects().first() as RectangleMapObject
-		player.body.position.set(spawn.rectangle.x, spawn.rectangle.y)
+		player = createPlayer(toWorldCoords(spawn.rectangle.x), toWorldCoords(spawn.rectangle.y))
 
 		for (mapObject in currentRoom.getCollisionObjects()) {
 			if (mapObject is RectangleMapObject) {
@@ -187,10 +189,10 @@ class LogicEngine {
 		world.dispose()
 	}
 
-	fun createPlayer(): PlayerEntity {
+	fun createPlayer(x: Float, y: Float): PlayerEntity {
 		val bodyDef: BodyDef = BodyDef()
 		bodyDef.type = BodyDef.BodyType.DynamicBody
-		bodyDef.position.set(2f, 6f)
+		bodyDef.position.set(x, y)
 		bodyDef.fixedRotation = true
 		val body: Body = world.createBody(bodyDef)
 
