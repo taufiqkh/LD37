@@ -5,5 +5,6 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject
 /**
  * Candy
  */
-class Candy(val mapObject: RectangleMapObject) {
+data class Candy(val mapObject: RectangleMapObject) {
+	var isEaten: Boolean = false
 }

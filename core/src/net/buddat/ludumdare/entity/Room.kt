@@ -38,5 +38,7 @@ public class Room(mapFile: String) : Entity() {
 	public fun getSpawnObjects(): MapObjects {
 		return tiledMap.layers.get(Constants.spawnLayer).objects
 	}
+
+	val candies: MutableList<Candy> = mutableListOf()
 	
 }

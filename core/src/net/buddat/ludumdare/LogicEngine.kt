@@ -81,7 +81,11 @@ class LogicEngine {
 		val candyObjects = currentRoom.getCandyObjects()
 		candyObjects
 				.filterIsInstance<RectangleMapObject>()
-				.forEach { createBoxSensor(it).userData = Candy(it) }
+				.forEach {
+					val candy = Candy(it)
+					createBoxSensor(it).userData = candy
+					currentRoom.candies.add(candy)
+				}
 		world.setContactListener(CandyContactListener(candyObjects))
 
 	}

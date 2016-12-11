@@ -33,5 +33,6 @@ class PlayerEntity(val body: Body) : Entity() {
 
 	fun startContact(candy: Candy) {
 		println("Candyyyyyy")
+		candy.isEaten = true
 	}
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.MapObjects
 import com.badlogic.gdx.physics.box2d.*
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.entity.PlayerEntity
+import net.buddat.ludumdare.util.Types
 
 /**
  * Listener for candy collisions
@@ -13,23 +14,10 @@ class CandyContactListener(candies: MapObjects) : ContactListener {
 
 	}
 
-	inline fun <reified A, reified B> match(fixtureA: Fixture, fixtureB: Fixture):
-			Pair<A, B>? {
-		val userDataA = fixtureA.body.userData
-		val userDataB = fixtureB.body.userData
-
-		return if (userDataA is A && userDataB is B) {
-			Pair(userDataA, userDataB)
-		} else if (userDataB is A && userDataA is B) {
-			Pair<A, B>(userDataB, userDataA)
-		} else null
-	}
-
 	override fun beginContact(contact: Contact?) {
 		if (contact == null) return
-		val result = match<Candy, PlayerEntity>(contact.fixtureA, contact.fixtureB)
-		if (result == null) return
-		val (candy: Candy, player: PlayerEntity) = result
+		val (candy: Candy, player: PlayerEntity) = Types.matchPair<Candy, PlayerEntity>(
+				contact.fixtureA, contact.fixtureB) ?: return
 		player.startContact(candy)
 	}
 
