@@ -19,8 +19,8 @@ enum class CandyEffectType {
 	NO_EFFECT;
 
 	companion object {
-		val jumpHigherModifier = 1.5f
-		val jumpLowerModifier = 0.5f
+		val jumpHigherModifier = 1.42857f
+		val jumpLowerModifier = 0.70f
 		val moveFasterModifier = 2f
 		val moveSlowerModifier = 0.5f
 	}

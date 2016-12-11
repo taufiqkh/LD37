@@ -129,7 +129,7 @@
   <object id="20" x="256.5" y="1465" width="62" height="15"/>
   <object id="21" x="271.5" y="1457" width="38.5" height="7.5"/>
   <object id="22" x="288.5" y="1449" width="22.5" height="7"/>
-  <object id="25" x="959" y="1377" width="165" height="28">
+  <object id="25" x="964" y="1377" width="156" height="20">
    <properties>
     <property name="death" value=""/>
    </properties>

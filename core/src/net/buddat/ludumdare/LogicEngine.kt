@@ -152,6 +152,14 @@ class LogicEngine {
 					CandyEffectType.GRAVITY_DOWN -> world.gravity = Vector2(0f, -Speed.gravity)
 					CandyEffectType.GRAVITY_LEFT -> world.gravity = Vector2(-Speed.gravity, 0f)
 					CandyEffectType.GRAVITY_RIGHT -> world.gravity = Vector2(Speed.gravity, 0f)
+					CandyEffectType.JUMP_HIGHER -> {
+						player.candyEffectTypes.remove(CandyEffectType.JUMP_LOWER)
+						player.candyEffectTypes.add(CandyEffectType.JUMP_HIGHER)
+					}
+					CandyEffectType.JUMP_LOWER -> {
+						player.candyEffectTypes.remove(CandyEffectType.JUMP_HIGHER)
+						player.candyEffectTypes.add(CandyEffectType.JUMP_LOWER)
+					}
 					else -> player.candyEffectTypes.add(it.candyEffectType)
 				}
 				for (listener in candyRemovalListeners) {
