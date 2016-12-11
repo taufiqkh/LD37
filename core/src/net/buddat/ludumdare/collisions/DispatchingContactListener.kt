@@ -15,7 +15,10 @@ class DispatchingContactListener() : ContactListener {
 		val (obj, player) =
 				Types.matchPair<ContactableEntity, PlayerEntity>(fixtureA, fixtureB)?: return
 		when (obj) {
-			is FixedBlock -> player.endContact(obj as FixedBlock)
+			is FixedBlock -> {
+				if (player.feet == fixtureA || player.feet == fixtureB) player.endFeetContact(obj)
+				else player.endContact(obj as FixedBlock)
+			}
 		}
 	}
 
@@ -28,7 +31,10 @@ class DispatchingContactListener() : ContactListener {
 		when(obj) {
 			is Candy -> player.startContact(obj as Candy)
 			is Killer -> player.startContact(obj as Killer)
-			is FixedBlock -> player.startContact(obj as FixedBlock)
+			is FixedBlock -> {
+				if (player.feet == fixtureA || player.feet == fixtureB) player.startFeetContact(obj)
+				else player.startContact(obj as FixedBlock)
+			}
 			else -> player.startContact(obj)
 		}
 	}

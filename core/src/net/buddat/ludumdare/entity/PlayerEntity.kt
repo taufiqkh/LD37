@@ -3,11 +3,12 @@ package net.buddat.ludumdare.entity
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.Fixture
 
 /**
  * Entity representing the player
  */
-class PlayerEntity(val body: Body) : Entity() {
+class PlayerEntity(val body: Body, val feet: Fixture) : Entity() {
 	private val airborneUpThreshold = 0.01f
 	private val airborneDownThreshold = -0.01f
 
@@ -45,6 +46,15 @@ class PlayerEntity(val body: Body) : Entity() {
 	}
 
 	val blockContacts: MutableSet<FixedBlock> = mutableSetOf()
+	val feetContacts: MutableSet<FixedBlock> = mutableSetOf()
+
+	fun startFeetContact(fixedBlock: FixedBlock) {
+		feetContacts.add(fixedBlock)
+	}
+
+	fun endFeetContact(fixedBlock: FixedBlock) {
+		feetContacts.remove(fixedBlock)
+	}
 
 	fun startContact(fixedBlock: FixedBlock) {
 		blockContacts.add(fixedBlock)

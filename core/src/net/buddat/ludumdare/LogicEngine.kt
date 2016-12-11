@@ -37,7 +37,7 @@ class LogicEngine {
 
 	init {
 		currentRoom = Room(Constants.defaultMap)
-		player = PlayerEntity(createPlayerBody())
+		player = createPlayer()
 		engine.addEntity(currentRoom)
 		engine.addEntity(player)
 	}
@@ -123,7 +123,7 @@ class LogicEngine {
 			world.step(timeStep, velocityIterations, positionIterations)
 			accumulator -= timeStep
 			val mCalc = MovementCalculator()
-			mCalc.rawMovement(inputHandler.poll(), player)
+			val (jumpedFrom, landed) = mCalc.rawMovement(inputHandler.poll(), player)
 			val eatenCandies = currentRoom.candies.filter { it.isEaten }
 			eatenCandies.forEach {
 				currentRoom.candies.remove(it)
@@ -141,11 +141,15 @@ class LogicEngine {
 				} else {
 					timeOfDeath += delta
 				}
+			} else if (jumpedFrom != null) {
+				for (listener in jumpListeners) {
+					listener.onJump(player, jumpedFrom)
+				}
 			}
 		}
 	}
 
-	fun createPlayerBody(): Body {
+	fun createPlayer(): PlayerEntity {
 		val bodyDef: BodyDef = BodyDef()
 		bodyDef.type = BodyDef.BodyType.DynamicBody
 		bodyDef.position.set(2f, 6f)
@@ -180,11 +184,11 @@ class LogicEngine {
 		feetFixtureDef.density = 1f
 		feetFixtureDef.friction = 3f
 		feetFixtureDef.restitution = 0f
-		body.createFixture(feetFixtureDef)
+		val feet = body.createFixture(feetFixtureDef)
 
 		bounds.dispose()
 		feetBounds.dispose()
-		return body
+		return PlayerEntity(body, feet)
 	}
 
 	fun addCandyRemovalListener(candyRemovalListener: CandyRemovalListener) {
