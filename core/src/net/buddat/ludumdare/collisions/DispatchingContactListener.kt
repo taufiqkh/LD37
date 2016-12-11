@@ -2,6 +2,7 @@ package net.buddat.ludumdare.collisions
 
 import com.badlogic.gdx.physics.box2d.*
 import net.buddat.ludumdare.entity.Candy
+import net.buddat.ludumdare.entity.ContactableEntity
 import net.buddat.ludumdare.entity.Killer
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.util.Types
@@ -18,32 +19,13 @@ class DispatchingContactListener() : ContactListener {
 		if (contact == null) return
 		val fixtureA = contact.fixtureA
 		val fixtureB = contact.fixtureB
-		if (tryCandy(fixtureA, fixtureB)) return
-		tryKiller(fixtureA, fixtureB)
-	}
-
-	fun tryCandy(fixtureA: Fixture, fixtureB: Fixture): Boolean {
-		val candyResult = Types.matchPair<Candy, PlayerEntity>(
-				fixtureA, fixtureB)
-		if (candyResult != null) {
-			val (candy: Candy, player: PlayerEntity) = candyResult
-			if (!candy.isEaten) {
-				player.startContact(candy)
-			}
-			return true
+		val (obj, player) =
+				Types.matchPair<ContactableEntity, PlayerEntity>(fixtureA, fixtureB)?: return
+		when(obj) {
+			is Candy -> player.startContact(obj)
+			is Killer -> player.startContact(obj)
+			else -> player.startContact(obj)
 		}
-		return false
-	}
-
-	fun tryKiller(fixtureA: Fixture, fixtureB: Fixture): Boolean {
-		val killerResult = Types.matchPair<Killer, PlayerEntity>(
-				fixtureA, fixtureB)
-		if (killerResult != null) {
-			val (killer: Killer, player: PlayerEntity) = killerResult
-			player.startContact(killer)
-			return true
-		}
-		return false
 	}
 
 	override fun preSolve(contact: Contact?, oldManifold: Manifold?) {

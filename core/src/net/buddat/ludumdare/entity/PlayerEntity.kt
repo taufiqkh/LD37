@@ -33,12 +33,18 @@ class PlayerEntity(val body: Body) : Entity() {
 	var isDead: Boolean = false
 
 	fun startContact(candy: Candy) {
-		println("Candyyyyyy")
-		candy.isEaten = true
+		if (!candy.isEaten) {
+			println("Candyyyyyy")
+			candy.isEaten = true
+		}
 	}
 
 	fun startContact(killer: Killer) {
 		println("He ded")
 		isDead = true
+	}
+
+	fun startContact(contactableEntity: ContactableEntity) {
+		println("Unknown wtf")
 	}
 }
