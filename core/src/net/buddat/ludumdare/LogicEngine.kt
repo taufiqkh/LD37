@@ -98,7 +98,10 @@ class LogicEngine {
 				fixtureDef.shape = floorBox
 				fixtureDef.friction = 2f
 				body.createFixture(fixtureDef)
-				body.userData = FixedBlock(body)
+				if (mapObject.properties.containsKey("death"))
+					body.userData = DeathFixedBlock(body)
+				else
+					body.userData = FixedBlock(body)
 				floorBox.dispose()
 			}
 		}

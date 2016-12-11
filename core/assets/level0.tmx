@@ -126,12 +126,12 @@
  <objectgroup name="Candy">
   <object id="8" x="361.333" y="1357.33" width="16" height="16">
    <properties>
-    <property name="effect" value="jumplower"/>
+    <property name="effect" value="JUMP_LOWER"/>
    </properties>
   </object>
   <object id="10" x="750.667" y="1422" width="16" height="16">
    <properties>
-    <property name="effect" value="jumphigher"/>
+    <property name="effect" value="JUMP_HIGHER"/>
    </properties>
   </object>
   <object id="11" x="544.667" y="1326.67" width="16" height="16"/>

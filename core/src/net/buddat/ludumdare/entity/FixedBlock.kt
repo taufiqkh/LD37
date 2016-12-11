@@ -8,3 +8,6 @@ import com.badlogic.gdx.physics.box2d.Body
  */
 class FixedBlock(body: Body) : ContactableEntity {
 }
+
+class DeathFixedBlock(body: Body) : ContactableEntity, Killer {
+}
