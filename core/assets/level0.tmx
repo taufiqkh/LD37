@@ -124,8 +124,16 @@
   <object id="1" x="64" y="1407.33" width="30.6667" height="32.6667"/>
  </objectgroup>
  <objectgroup name="Candy">
-  <object id="8" x="361.333" y="1357.33" width="16" height="16"/>
-  <object id="10" x="750.667" y="1422" width="16" height="16"/>
+  <object id="8" x="361.333" y="1357.33" width="16" height="16">
+   <properties>
+    <property name="effect" value="jumplower"/>
+   </properties>
+  </object>
+  <object id="10" x="750.667" y="1422" width="16" height="16">
+   <properties>
+    <property name="effect" value="jumphigher"/>
+   </properties>
+  </object>
   <object id="11" x="544.667" y="1326.67" width="16" height="16"/>
  </objectgroup>
 </map>

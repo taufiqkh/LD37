@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="32" tileheight="32" nextobjectid="23">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="32" tileheight="32" nextobjectid="25">
  <tileset firstgid="1" name="test" tilewidth="32" tileheight="32" tilecount="640" columns="20">
   <image source="Tilesheet/test.png" width="640" height="1024"/>
  </tileset>
@@ -134,10 +134,26 @@
   <object id="14" x="767" y="1360" width="35" height="36"/>
  </objectgroup>
  <objectgroup name="Candy">
-  <object id="15" x="346" y="1322" width="18" height="18"/>
-  <object id="16" x="439" y="1399" width="15" height="20"/>
-  <object id="17" x="80" y="1423" width="17" height="19"/>
-  <object id="18" x="73" y="1183" width="17" height="21"/>
+  <object id="15" x="346" y="1322" width="18" height="18">
+   <properties>
+    <property name="effect" value="jumplower"/>
+   </properties>
+  </object>
+  <object id="16" x="439" y="1399" width="15" height="20">
+   <properties>
+    <property name="effect" value="movefaster"/>
+   </properties>
+  </object>
+  <object id="17" x="80" y="1423" width="17" height="19">
+   <properties>
+    <property name="effect" value="jumphigher"/>
+   </properties>
+  </object>
+  <object id="18" x="73" y="1183" width="17" height="21">
+   <properties>
+    <property name="effect" value="moveslower"/>
+   </properties>
+  </object>
   <object id="19" x="1019" y="1242" width="18" height="21"/>
  </objectgroup>
 </map>
