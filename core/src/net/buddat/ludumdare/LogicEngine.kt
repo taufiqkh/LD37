@@ -46,6 +46,20 @@ class LogicEngine {
 		return mapObject.rectangle.height / Constants.PPM / 2f
 	}
 
+	fun createBoxSensor(mapObject: RectangleMapObject): Body {
+		val bodyDef: BodyDef = BodyDef()
+		bodyDef.position.set(Vector2(calcXPos(mapObject), calcYPos(mapObject)))
+		val body: Body = world.createBody(bodyDef)
+		val box: PolygonShape = PolygonShape()
+		box.setAsBox(calcHalfWidth(mapObject), calcHalfHeight(mapObject))
+		val fixtureDef: FixtureDef = FixtureDef()
+		fixtureDef.shape = box
+		fixtureDef.isSensor = true
+		body.createFixture(fixtureDef)
+		box.dispose()
+		return body
+	}
+
 	fun create() {
 		currentRoom.create()
 		
@@ -65,16 +79,7 @@ class LogicEngine {
 		}
 		for (candy in currentRoom.getCandyObjects()) {
 			if (candy is RectangleMapObject) {
-				val bodyDef: BodyDef = BodyDef()
-				bodyDef.position.set(Vector2(calcXPos(candy), calcYPos(candy)))
-				val body: Body = world.createBody(bodyDef)
-				val box: PolygonShape = PolygonShape()
-				box.setAsBox(calcHalfWidth(candy), calcHalfHeight(candy))
-				val fixtureDef: FixtureDef = FixtureDef()
-				fixtureDef.shape = box
-				fixtureDef.isSensor = true
-				body.createFixture(fixtureDef)
-				box.dispose()
+				createBoxSensor(candy)
 			}
 		}
 	}
