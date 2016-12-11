@@ -6,6 +6,6 @@ import com.badlogic.gdx.physics.box2d.Body
 /**
  * Candy
  */
-data class Candy(val mapObject: RectangleMapObject, val body: Body) {
+data class Candy(val mapObject: RectangleMapObject, val body: Body) : ContactableEntity {
 	var isEaten: Boolean = false
 }

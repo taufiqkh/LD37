@@ -30,9 +30,15 @@ class PlayerEntity(val body: Body) : Entity() {
 	var movementDirLeft: Boolean = false
 	var isLanding: Boolean = false
 	var isIdle: Boolean = true
+	var isDead: Boolean = false
 
 	fun startContact(candy: Candy) {
 		println("Candyyyyyy")
 		candy.isEaten = true
+	}
+
+	fun startContact(killer: Killer) {
+		println("He ded")
+		isDead = true
 	}
 }
