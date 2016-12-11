@@ -55,21 +55,42 @@ class LD37 : ApplicationAdapter() {
 	var camZoom = 1f
 	var zoomDir = true
 	
-	var currentDifficulty = 0f
+	var currentDifficulty = -1f
 	
-	fun switchMap(newMap: TiledMap) {
-		tiledMap = newMap
-		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
-		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
-		
-		val backgroundImg = tiledMap.layers.get(0).name
-		backgroundImage = Texture(Gdx.files.internal(backgroundImg))
-		
-		objectRenderer.objectList.clear()
-		for (candy in logic.currentRoom.candies)
-			objectRenderer.objectList.add(ObjectRenderable(candy, ObjectType.CANDY))
-		
-		currentDifficulty += 1f
+	var switchingMap = false
+	var mapSwitchDir = true
+	var mapSwitchAngleChange = 0.01f
+	var mapSwitchCurrAngle = 0f
+	var mapSwitchAngleMax = mapSwitchAngleChange * 30f
+	
+	fun switchMap(newMap: TiledMap, first: Boolean) {
+		if (switchingMap || first) {
+			if (mapSwitchDir && mapSwitchCurrAngle < mapSwitchAngleMax && !first) {
+				mapSwitchCurrAngle += mapSwitchAngleChange
+			} else if (mapSwitchDir || first) {
+				mapSwitchDir = false
+				if (first)
+					mapSwitchDir = true
+				tiledMap = newMap
+				tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
+				tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
+				
+				val backgroundImg = tiledMap.layers.get(0).name
+				backgroundImage = Texture(Gdx.files.internal(backgroundImg))
+				
+				objectRenderer.objectList.clear()
+				for (candy in logic.currentRoom.candies)
+					objectRenderer.objectList.add(ObjectRenderable(candy, ObjectType.CANDY))
+				
+				currentDifficulty += 1f
+			} else if (!mapSwitchDir && mapSwitchCurrAngle > 0f) {
+				mapSwitchCurrAngle -= mapSwitchAngleChange
+			} else {
+				mapSwitchDir = true
+				switchingMap = false
+				fboBatch.shader = shaderMap
+			}
+		}
 	}
 	
 	fun updateCameraPosition() {
@@ -156,7 +177,7 @@ class LD37 : ApplicationAdapter() {
 		
 		diffMod = DifficultyModifier()
 
-		switchMap(logic.currentRoom.tiledMap)
+		switchMap(logic.currentRoom.tiledMap, true)
 
 		debugRenderer = Box2DDebugRenderer(true, true, true, false, true, false)
 	}
@@ -169,9 +190,10 @@ class LD37 : ApplicationAdapter() {
 		else
 			audioHandler.setRunning(false)
 		
-		if (logic.currentRoom.tiledMap != tiledMap) {
-			// TODO: Morph between current map and new map
-			switchMap(logic.currentRoom.tiledMap)
+		if (logic.currentRoom.tiledMap != tiledMap || switchingMap) {
+			switchingMap = true
+			switchMap(logic.currentRoom.tiledMap, false)
+			if (switchingMap) fboBatch.shader = shaderBg
 		}
 
 		mapFbo.begin()
@@ -206,7 +228,10 @@ class LD37 : ApplicationAdapter() {
 		mapFbo.end()
 		
 		fboBatch.begin()
-		diffMod.applyMapDifficulty(currentDifficulty, fboBatch.shader)
+		if (switchingMap)
+			fboBatch.shader.setUniformf("angle", mapSwitchCurrAngle)
+		else
+			diffMod.applyMapDifficulty(currentDifficulty, fboBatch.shader)
 		fboBatch.draw(fboRegion, 0f, 0f)
 		fboBatch.end()
 		
