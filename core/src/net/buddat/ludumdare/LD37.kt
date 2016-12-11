@@ -2,6 +2,7 @@ package net.buddat.ludumdare
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
@@ -32,6 +33,8 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
 	internal lateinit var playerRenderer: PlayerRenderer
 	internal lateinit var uiRenderer: UIRenderer
+	
+	internal lateinit var shader: ShaderProgram
 
 	var running = false
 
@@ -44,6 +47,11 @@ class LD37 : ApplicationAdapter() {
 	
 	var shouldRotate = false
 	var camRotate = 0.15f
+	
+	var backgroundRotate: Float = 0.0001f
+	var backgroundRotateSpeed: Float = 0.0001f
+	var backgroundRotateDir = true
+	var backgroundRotateCap: Float = 0.05f
 	
 	fun switchMap(newMap: TiledMap) {
 		tiledMap = newMap
@@ -106,7 +114,10 @@ class LD37 : ApplicationAdapter() {
 		backgroundCamera.setToOrtho(false, w, h)
 		backgroundCamera.update()
 		
+		shader = ShaderProgram(Gdx.files.internal("shaders/testShad0.vert").readString(), Gdx.files.internal("shaders/testShad0.frag").readString())
 		backgroundSpritebatch = SpriteBatch()
+		backgroundSpritebatch.shader = shader
+		println(shader.log)
 
 		logic.create()
 		switchMap(logic.currentRoom.tiledMap)
@@ -138,6 +149,7 @@ class LD37 : ApplicationAdapter() {
 		backgroundCamera.update()
 		backgroundSpritebatch.projectionMatrix = backgroundCamera.combined
 		backgroundSpritebatch.begin()
+		shader.setUniformf("angle", backgroundRotate)
 		backgroundSpritebatch.draw(backgroundImage, -500f, -500f)
 		backgroundSpritebatch.end()
 		
@@ -156,6 +168,16 @@ class LD37 : ApplicationAdapter() {
 		debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
 		
 		uiRenderer.render()
+		
+		if (backgroundRotateDir) {
+			backgroundRotate += backgroundRotateSpeed
+			if (backgroundRotate > backgroundRotateCap)
+				backgroundRotateDir = false
+		} else {
+			backgroundRotate -= backgroundRotateSpeed
+			if (backgroundRotate < -backgroundRotateCap)
+				backgroundRotateDir = true
+		}
 	}
 
 	override fun dispose() {
