@@ -109,7 +109,14 @@ class LogicEngine {
 				.filterIsInstance<RectangleMapObject>()
 				.forEach {
 					val body = createBoxSensor(it)
-					val candy = Candy(it, body, CandyEffectType.JUMP_HIGHER)
+					val effectVal = it.properties.get("effect")
+					val effect = if (effectVal is String) {
+						CandyEffectType.valueOf(effectVal)
+					} else {
+						println("Effect $effectVal isn't a string wtf")
+						CandyEffectType.NO_EFFECT
+					}
+					val candy = Candy(it, body, effect)
 					body.userData = candy
 					currentRoom.candies.add(candy)
 				}
@@ -140,7 +147,13 @@ class LogicEngine {
 			eatenCandies.forEach {
 				currentRoom.candies.remove(it)
 				world.destroyBody(it.body)
-				player.candyEffectTypes.add(it.candyEffectType)
+				when (it.candyEffectType) {
+					CandyEffectType.GRAVITY_UP -> world.gravity = Vector2(0f, Speed.gravity)
+					CandyEffectType.GRAVITY_DOWN -> world.gravity = Vector2(0f, -Speed.gravity)
+					CandyEffectType.GRAVITY_LEFT -> world.gravity = Vector2(-Speed.gravity, 0f)
+					CandyEffectType.GRAVITY_RIGHT -> world.gravity = Vector2(Speed.gravity, 0f)
+					else -> player.candyEffectTypes.add(it.candyEffectType)
+				}
 				for (listener in candyRemovalListeners) {
 					listener.onCandyRemoval(it)
 				}
