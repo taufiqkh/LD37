@@ -87,6 +87,48 @@ class LogicEngine {
 		bodyDef.type = BodyDef.BodyType.DynamicBody
 		bodyDef.position.set(2f, 6f)
 		bodyDef.fixedRotation = true
+		val body: Body = world.createBody(bodyDef)
+
+		// main body
+		val bodyW = 0.4f
+		val bodyH = 0.8f
+		val bounds = PolygonShape()
+		bounds.setAsBox(0.4f, 0.8f)
+		val fixtureDef: FixtureDef = FixtureDef()
+		fixtureDef.shape = bounds
+		fixtureDef.density = 1f
+		fixtureDef.friction = 0f
+		fixtureDef.restitution = 0f
+		body.createFixture(fixtureDef)
+
+		// feet
+		val feetBounds = PolygonShape()
+		val feetHalfWTop = 0.38f
+		val feetHalfWBottom = 0.3f
+		val feetHeight = 0.05f
+		feetBounds.set(arrayOf(
+				Vector2(-feetHalfWTop, -bodyH),
+				Vector2(feetHalfWTop, -bodyH),
+				Vector2(feetHalfWBottom, -bodyH - feetHeight),
+				Vector2(-feetHalfWBottom,-bodyH - feetHeight)))
+		//feetBounds.setAsBox(0.38f, 0.05f, Vector2(0f, -bodyH), 0f)
+		val feetFixtureDef: FixtureDef = FixtureDef()
+		feetFixtureDef.shape = feetBounds
+		feetFixtureDef.density = 1f
+		feetFixtureDef.friction = 3f
+		feetFixtureDef.restitution = 0f
+		body.createFixture(feetFixtureDef)
+
+		bounds.dispose()
+		feetBounds.dispose()
+		return body
+	}
+
+	fun createPlayerFeetBody(): Body {
+		val bodyDef: BodyDef = BodyDef()
+		bodyDef.type = BodyDef.BodyType.DynamicBody
+		bodyDef.position.set(2f, 6f)
+		bodyDef.fixedRotation = true
 		val bounds = PolygonShape()
 		bounds.setAsBox(0.4f, 0.8f)
 		val fixtureDef: FixtureDef = FixtureDef()
