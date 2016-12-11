@@ -8,6 +8,8 @@ public object Constants {
 	public val FPS = 90
 	public val PPM = 32f;
 	
+	public val backgroundCameraSpeed = 5f
+	
 	public val title = "Ludum Dare 37 Game"
 	
 	public val defaultMap = "level0.tmx"

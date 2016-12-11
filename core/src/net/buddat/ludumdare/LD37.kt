@@ -2,6 +2,7 @@ package net.buddat.ludumdare
 
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.Gdx.input as input
 import com.badlogic.gdx.maps.tiled.*
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
@@ -21,6 +22,11 @@ class LD37 : ApplicationAdapter() {
 
 	internal lateinit var tiledMap: TiledMap
 	internal lateinit var camera: OrthographicCamera
+	
+	internal lateinit var backgroundCamera: OrthographicCamera
+	internal lateinit var backgroundImage: Texture
+	internal lateinit var backgroundSpritebatch: SpriteBatch
+	
 	internal lateinit var debugRenderer: Box2DDebugRenderer
 	
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
@@ -43,6 +49,9 @@ class LD37 : ApplicationAdapter() {
 		tiledMap = newMap
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
 		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
+		
+		val backgroundImg = tiledMap.layers.get(0).name
+		backgroundImage = Texture(Gdx.files.internal(backgroundImg))
 	}
 	
 	fun updateCameraPosition() {
@@ -80,6 +89,9 @@ class LD37 : ApplicationAdapter() {
 		
 		if (shouldRotate)
 			camera.rotate(camRotate)
+		
+		backgroundCamera.position.x = camera.position.x / Constants.backgroundCameraSpeed
+		backgroundCamera.position.y = camera.position.y / Constants.backgroundCameraSpeed
 	}
 
 	override fun create() {
@@ -89,6 +101,12 @@ class LD37 : ApplicationAdapter() {
 		camera = OrthographicCamera()
 		camera.setToOrtho(false, w, h)
 		camera.update()
+		
+		backgroundCamera = OrthographicCamera()
+		backgroundCamera.setToOrtho(false, w, h)
+		backgroundCamera.update()
+		
+		backgroundSpritebatch = SpriteBatch()
 
 		logic.create()
 		switchMap(logic.currentRoom.tiledMap)
@@ -116,6 +134,12 @@ class LD37 : ApplicationAdapter() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
 		updateCameraPosition()
+		
+		backgroundCamera.update()
+		backgroundSpritebatch.projectionMatrix = backgroundCamera.combined
+		backgroundSpritebatch.begin()
+		backgroundSpritebatch.draw(backgroundImage, -500f, -500f)
+		backgroundSpritebatch.end()
 		
 		camera.update()
 		tiledMapRenderer.setView(camera)
