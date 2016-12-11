@@ -142,6 +142,8 @@ class LD37 : ApplicationAdapter() {
 		
 		audioHandler = AudioHandler()
 		logic.addCandyRemovalListener(audioHandler)
+		logic.addJumpListener(audioHandler)
+		logic.addLandListener(audioHandler)
 
 		switchMap(logic.currentRoom.tiledMap)
 
@@ -151,6 +153,11 @@ class LD37 : ApplicationAdapter() {
 	override fun render() {
 		running = true
 		logic.update(Gdx.graphics.deltaTime)
+		
+		if (!logic.player.isAirborne && logic.player.isRunning)
+			audioHandler.setRunning(true)
+		else
+			audioHandler.setRunning(false)
 		
 		if (logic.currentRoom.tiledMap != tiledMap) {
 			// TODO: Morph between current map and new map
