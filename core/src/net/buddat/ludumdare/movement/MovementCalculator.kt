@@ -1,5 +1,6 @@
 package net.buddat.ludumdare.movement
 
+import net.buddat.ludumdare.entity.effects.CandyEffectType
 import net.buddat.ludumdare.entity.FixedBlock
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.input.InputHandler
@@ -20,6 +21,13 @@ class MovementCalculator() {
 			if (right && velX < Speed.maxHorzVelocity ||
 					left && velX > -Speed.maxHorzVelocity) {
 				player.isRunning = true
+				var modifier = 1f
+				if (player.candyEffectTypes.contains(CandyEffectType.MOVE_FASTER)) {
+					modifier *= CandyEffectType.moveFasterModifier
+				}
+				if (player.candyEffectTypes.contains(CandyEffectType.MOVE_SLOWER)) {
+					modifier *= CandyEffectType.moveSlowerModifier
+				}
 				val impulse = if (right) horizontalImpulse
 				else -horizontalImpulse
 				player.movementDirLeft = impulse < 0
@@ -35,7 +43,14 @@ class MovementCalculator() {
 		if (jump && velY <= airborneUpThreshold && velY >= airborneDownThreshold &&
 				player.feetContacts.isNotEmpty()) {
 			val bodyPosn = player.body.position
-			player.body.applyLinearImpulse(0f, jumpSpeed, bodyPosn.x, bodyPosn.y, true)
+			var modifier = 1f
+			if (player.candyEffectTypes.contains(CandyEffectType.JUMP_HIGHER)) {
+				modifier *= CandyEffectType.jumpHigherModifier
+			}
+			if (player.candyEffectTypes.contains(CandyEffectType.JUMP_LOWER)) {
+				modifier *= CandyEffectType.jumpLowerModifier
+			}
+			player.body.applyLinearImpulse(0f, jumpSpeed * modifier, bodyPosn.x, bodyPosn.y, true)
 			player.isAirborne = true
 			return MovementResult(player.feetContacts.first(), null)
 		}

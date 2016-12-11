@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.Fixture
+import net.buddat.ludumdare.entity.effects.CandyEffectType
 
 /**
  * Entity representing the player
@@ -12,6 +13,8 @@ class PlayerEntity(val body: Body, val feet: Fixture) : Entity() {
 	init {
 		body.userData = this
 	}
+
+	val candyEffectTypes: MutableSet<CandyEffectType> = mutableSetOf()
 
 	val position: Vector2
 		get() = body.position.cpy()

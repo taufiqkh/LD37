@@ -1,0 +1,22 @@
+package net.buddat.ludumdare.entity.effects
+
+/**
+ * Candy effects
+ */
+enum class CandyEffectType {
+	JUMP_HIGHER,
+	JUMP_LOWER,
+	MOVE_FASTER,
+	MOVE_SLOWER,
+	HIGHER_GRAVITY,
+	LOWER_GRAVITY,
+	MIRROR_IMAGE_HORIZONTAL,
+	MIRROR_IMAGE_VERTICAL;
+
+	companion object {
+		val jumpHigherModifier = 1.5f
+		val jumpLowerModifier = 0.5f
+		val moveFasterModifier = 2f
+		val moveSlowerModifier = 0.5f
+	}
+}

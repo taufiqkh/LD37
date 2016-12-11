@@ -6,11 +6,9 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.utils.Array as GdxArray
 import net.buddat.ludumdare.collisions.DispatchingContactListener
-import net.buddat.ludumdare.entity.Candy
-import net.buddat.ludumdare.entity.FixedBlock
+import net.buddat.ludumdare.entity.*
+import net.buddat.ludumdare.entity.effects.CandyEffectType
 
-import net.buddat.ludumdare.entity.PlayerEntity
-import net.buddat.ludumdare.entity.Room
 import net.buddat.ludumdare.input.InputHandler
 import net.buddat.ludumdare.movement.MovementCalculator
 import net.buddat.ludumdare.movement.Speed
@@ -106,7 +104,7 @@ class LogicEngine {
 				.filterIsInstance<RectangleMapObject>()
 				.forEach {
 					val body = createBoxSensor(it)
-					val candy = Candy(it, body)
+					val candy = Candy(it, body, CandyEffectType.JUMP_HIGHER)
 					body.userData = candy
 					currentRoom.candies.add(candy)
 				}
@@ -133,16 +131,17 @@ class LogicEngine {
 		while (accumulator >= timeStep) {
 			world.step(timeStep, velocityIterations, positionIterations)
 			accumulator -= timeStep
-			val mCalc = MovementCalculator()
-			val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
 			val eatenCandies = currentRoom.candies.filter { it.isEaten }
 			eatenCandies.forEach {
 				currentRoom.candies.remove(it)
 				world.destroyBody(it.body)
+				player.candyEffectTypes.add(it.candyEffectType)
 				for (listener in candyRemovalListeners) {
 					listener.onCandyRemoval(it)
 				}
 			}
+			val mCalc = MovementCalculator()
+			val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
 			if (player.isDead) {
 				if (timeOfDeath.isNaN()) {
 					timeOfDeath = 0.0
