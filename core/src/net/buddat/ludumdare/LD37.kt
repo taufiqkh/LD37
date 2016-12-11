@@ -62,13 +62,14 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
 		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
 		
-		
 		val backgroundImg = tiledMap.layers.get(0).name
 		backgroundImage = Texture(Gdx.files.internal(backgroundImg))
 		
 		objectRenderer.objectList.clear()
 		for (candy in logic.currentRoom.candies)
 			objectRenderer.objectList.add(ObjectRenderable(candy, ObjectType.CANDY))
+		
+		currentDifficulty += 1f
 	}
 	
 	fun updateCameraPosition() {
