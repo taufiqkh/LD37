@@ -38,6 +38,8 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var uiRenderer: UIRenderer
 	internal lateinit var objectRenderer: ObjectRenderer
 	
+	internal lateinit var audioHandler: AudioHandler
+	
 	internal lateinit var shader: ShaderProgram
 
 	var running = false
@@ -137,6 +139,9 @@ class LD37 : ApplicationAdapter() {
 		
 		uiRenderer = UIRenderer()
 		uiRenderer.create()
+		
+		audioHandler = AudioHandler()
+		logic.addCandyRemovalListener(audioHandler)
 
 		switchMap(logic.currentRoom.tiledMap)
 

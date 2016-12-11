@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.utils.Array as GdxArray
+import com.badlogic.gdx.audio.Sound
 
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.Constants
@@ -31,6 +32,9 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 	lateinit var candyTex: Texture
 	lateinit var sawTex: Texture
 	
+	lateinit var eatSound: Sound
+	lateinit var eatSound2: Sound
+	
 	var halfX: Float = 0f
 	var halfY: Float = 0f
 	
@@ -39,6 +43,9 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 		objectList = ArrayList<ObjectRenderable>()
 		
 		candyTex = Texture(Gdx.files.internal("pill.png"))
+		
+		eatSound = Gdx.audio.newSound(Gdx.files.internal("sounds/sfx_blippy1.ogg"))
+		eatSound2 = Gdx.audio.newSound(Gdx.files.internal("sounds/sfx_blippy2.ogg"))
 		
 		halfX = candyTex.width / 4f
 		halfY = candyTex.height / 4f
