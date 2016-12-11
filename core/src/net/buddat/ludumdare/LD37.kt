@@ -12,6 +12,9 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import net.buddat.ludumdare.graphics.PlayerRenderer
 import net.buddat.ludumdare.graphics.AnimationState
 import net.buddat.ludumdare.graphics.UIRenderer
+import net.buddat.ludumdare.graphics.ObjectRenderer
+import net.buddat.ludumdare.graphics.ObjectRenderable
+import net.buddat.ludumdare.graphics.ObjectType
 
 class LD37 : ApplicationAdapter() {
 
@@ -33,6 +36,7 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var tiledMapRenderer: TiledMapRenderer
 	internal lateinit var playerRenderer: PlayerRenderer
 	internal lateinit var uiRenderer: UIRenderer
+	internal lateinit var objectRenderer: ObjectRenderer
 	
 	internal lateinit var shader: ShaderProgram
 
@@ -60,6 +64,10 @@ class LD37 : ApplicationAdapter() {
 		
 		val backgroundImg = tiledMap.layers.get(0).name
 		backgroundImage = Texture(Gdx.files.internal(backgroundImg))
+		
+		objectRenderer.objectList.clear()
+		for (candy in logic.currentRoom.candies)
+			objectRenderer.objectList.add(ObjectRenderable(candy, ObjectType.CANDY))
 	}
 	
 	fun updateCameraPosition() {
@@ -117,17 +125,20 @@ class LD37 : ApplicationAdapter() {
 		shader = ShaderProgram(Gdx.files.internal("shaders/testShad0.vert").readString(), Gdx.files.internal("shaders/testShad0.frag").readString())
 		backgroundSpritebatch = SpriteBatch()
 		backgroundSpritebatch.shader = shader
-		println(shader.log)
-
+		
 		logic.create()
-		switchMap(logic.currentRoom.tiledMap)
-
+		
 		playerRenderer = PlayerRenderer()
 		playerRenderer.create()
 		
+		objectRenderer = ObjectRenderer()
+		objectRenderer.create()
+		
 		uiRenderer = UIRenderer()
 		uiRenderer.create()
-		
+
+		switchMap(logic.currentRoom.tiledMap)
+
 		debugRenderer = Box2DDebugRenderer(true, true, true, false, true, false)
 	}
 
@@ -156,6 +167,9 @@ class LD37 : ApplicationAdapter() {
 		camera.update()
 		tiledMapRenderer.setView(camera)
 		tiledMapRenderer.render()
+		
+		objectRenderer.checkCandy(logic.currentRoom)
+		objectRenderer.render(camera)
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined
 		playerRenderer.currentState = when {
