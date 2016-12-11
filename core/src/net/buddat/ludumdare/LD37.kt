@@ -42,6 +42,7 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var objectRenderer: ObjectRenderer
 	
 	internal lateinit var audioHandler: AudioHandler
+	internal lateinit var diffMod: DifficultyModifier
 	
 	internal lateinit var shaderBg: ShaderProgram
 	internal lateinit var shaderMap: ShaderProgram
@@ -50,29 +51,15 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var fboRegion: TextureRegion
 	internal lateinit var fboBatch: SpriteBatch
 
-	var running = false
-
-	var renderX = 0f
-	var renderY = 0f
-	
 	var shouldZoom = false
 	var camZoom = 1f
 	var zoomDir = true
 	
-	var shouldRotate = false
-	var camRotate = 0.15f
-	
-	var backgroundRotate: Float = 0.0001f
-	var backgroundRotateSpeed: Float = 0.0001f
-	var backgroundRotateDir = true
-	var backgroundRotateCap: Float = 0.05f
-	
-	var startTime = System.currentTimeMillis()
+	var currentDifficulty = 0f
 	
 	fun switchMap(newMap: TiledMap) {
 		tiledMap = newMap
 		tiledMapRenderer = OrthogonalTiledMapRenderer(tiledMap)
-		// tiledMapRenderer.batch.shader = shaderMap
 		tiledMap.layers.get(Constants.collisionsLayer).isVisible = false
 		
 		
@@ -117,8 +104,7 @@ class LD37 : ApplicationAdapter() {
 			}
 		camera.zoom = camZoom
 		
-		if (shouldRotate)
-			camera.rotate(camRotate)
+		diffMod.applyRotationDifficulty(currentDifficulty, camera)
 		
 		backgroundCamera.position.x = camera.position.x / Constants.backgroundCameraSpeed
 		backgroundCamera.position.y = camera.position.y / Constants.backgroundCameraSpeed
@@ -166,6 +152,8 @@ class LD37 : ApplicationAdapter() {
 		
 		fboBatch = SpriteBatch()
 		fboBatch.shader = shaderMap
+		
+		diffMod = DifficultyModifier()
 
 		switchMap(logic.currentRoom.tiledMap)
 
@@ -173,7 +161,6 @@ class LD37 : ApplicationAdapter() {
 	}
 
 	override fun render() {
-		running = true
 		logic.update(Gdx.graphics.deltaTime)
 		
 		if (!logic.player.isAirborne && logic.player.isRunning)
@@ -187,53 +174,42 @@ class LD37 : ApplicationAdapter() {
 		}
 
 		mapFbo.begin()
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-		updateCameraPosition()
-		
-		backgroundCamera.update()
-		backgroundSpritebatch.projectionMatrix = backgroundCamera.combined
-		backgroundSpritebatch.begin()
-		shaderBg.setUniformf("angle", backgroundRotate)
-		backgroundSpritebatch.draw(backgroundImage, -500f, -500f)
-		backgroundSpritebatch.end()
-		
-		camera.update()
-		tiledMapRenderer.setView(camera)
-		tiledMapRenderer.render()
-		
-		objectRenderer.render(camera)
-
-		playerRenderer.spriteBatch.projectionMatrix = camera.combined
-		playerRenderer.currentState = when {
-			logic.player.isAirborne -> AnimationState.JUMPING
-			logic.player.isRunning -> AnimationState.RUNNING
-			else -> AnimationState.IDLE
-		}
-		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
-		
-		debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
-		
+			Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+	
+			updateCameraPosition()
+			
+			backgroundCamera.update()
+			backgroundSpritebatch.projectionMatrix = backgroundCamera.combined
+			backgroundSpritebatch.begin()
+			diffMod.applyBackgroundDifficulty(currentDifficulty, backgroundSpritebatch.shader)
+			backgroundSpritebatch.draw(backgroundImage, -500f, -500f)
+			backgroundSpritebatch.end()
+			
+			camera.update()
+			tiledMapRenderer.setView(camera)
+			tiledMapRenderer.render()
+			
+			objectRenderer.render(camera)
+	
+			playerRenderer.spriteBatch.projectionMatrix = camera.combined
+			playerRenderer.currentState = when {
+				logic.player.isAirborne -> AnimationState.JUMPING
+				logic.player.isRunning -> AnimationState.RUNNING
+				else -> AnimationState.IDLE
+			}
+			playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
+			
+			debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
 		mapFbo.end()
 		
 		fboBatch.begin()
-		fboBatch.shader.setUniformf("time", (System.currentTimeMillis() - startTime) / 1000f)
+		diffMod.applyMapDifficulty(currentDifficulty, fboBatch.shader)
 		fboBatch.draw(fboRegion, 0f, 0f)
 		fboBatch.end()
 		
 		uiRenderer.render()
-		
-		if (backgroundRotateDir) {
-			backgroundRotate += backgroundRotateSpeed
-			if (backgroundRotate > backgroundRotateCap)
-				backgroundRotateDir = false
-		} else {
-			backgroundRotate -= backgroundRotateSpeed
-			if (backgroundRotate < -backgroundRotateCap)
-				backgroundRotateDir = true
-		}
 	}
 
 	override fun dispose() {
