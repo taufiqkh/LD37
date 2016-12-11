@@ -27,6 +27,8 @@ class LogicEngine {
 
 	var currentRoom: Room
 
+	private val playerDeathListeners: MutableList<PlayerDeathListener> = mutableListOf()
+
 	init {
 		currentRoom = Room(Constants.defaultMap)
 		player = PlayerEntity(createPlayerBody())
@@ -105,6 +107,8 @@ class LogicEngine {
 
 	var accumulator:Double = 0.0
 
+	private var timeOfDeath = Double.NaN
+
 	fun update(delta: Float) {
 		val frameTime = Math.min(delta, minFrameTime)
 		accumulator += frameTime
@@ -119,6 +123,16 @@ class LogicEngine {
 				world.destroyBody(it.body)
 				for (listener in candyRemovalListeners) {
 					listener.onCandyRemoval(it)
+				}
+			}
+			if (player.isDead) {
+				if (timeOfDeath.isNaN()) {
+					timeOfDeath = 0.0
+					for (listener in playerDeathListeners) {
+						listener.onPlayerDeath(player)
+					}
+				} else {
+					timeOfDeath += delta
 				}
 			}
 		}
@@ -170,7 +184,15 @@ class LogicEngine {
 		candyRemovalListeners.add(candyRemovalListener)
 	}
 
+	fun addPlayerDeathListener(playerDeathListener: PlayerDeathListener) {
+		playerDeathListeners.add(playerDeathListener)
+	}
+
 	interface CandyRemovalListener {
 		fun onCandyRemoval(candy: Candy)
+	}
+
+	interface PlayerDeathListener {
+		fun onPlayerDeath(player: PlayerEntity)
 	}
 }
