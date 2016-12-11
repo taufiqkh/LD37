@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
+import net.buddat.ludumdare.entity.Candy
 
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
@@ -46,6 +47,20 @@ class LogicEngine {
 		return mapObject.rectangle.height / Constants.PPM / 2f
 	}
 
+	fun createBoxSensor(mapObject: RectangleMapObject): Body {
+		val bodyDef: BodyDef = BodyDef()
+		bodyDef.position.set(Vector2(calcXPos(mapObject), calcYPos(mapObject)))
+		val body: Body = world.createBody(bodyDef)
+		val box: PolygonShape = PolygonShape()
+		box.setAsBox(calcHalfWidth(mapObject), calcHalfHeight(mapObject))
+		val fixtureDef: FixtureDef = FixtureDef()
+		fixtureDef.shape = box
+		fixtureDef.isSensor = true
+		body.createFixture(fixtureDef)
+		box.dispose()
+		return body
+	}
+
 	fun create() {
 		currentRoom.create()
 		
@@ -63,20 +78,12 @@ class LogicEngine {
 				floorBox.dispose()
 			}
 		}
-		for (candy in currentRoom.getCandyObjects()) {
-			if (candy is RectangleMapObject) {
-				val bodyDef: BodyDef = BodyDef()
-				bodyDef.position.set(Vector2(calcXPos(candy), calcYPos(candy)))
-				val body: Body = world.createBody(bodyDef)
-				val box: PolygonShape = PolygonShape()
-				box.setAsBox(calcHalfWidth(candy), calcHalfHeight(candy))
-				val fixtureDef: FixtureDef = FixtureDef()
-				fixtureDef.shape = box
-				fixtureDef.isSensor = true
-				body.createFixture(fixtureDef)
-				box.dispose()
-			}
-		}
+		val candyObjects = currentRoom.getCandyObjects()
+		candyObjects
+				.filterIsInstance<RectangleMapObject>()
+				.forEach { createBoxSensor(it).userData = Candy(it) }
+		world.setContactListener(CandyContactListener(candyObjects))
+
 	}
 
 	fun getPlayerPosn(): Vector2 {
@@ -121,7 +128,7 @@ class LogicEngine {
 		fixtureDef.restitution = 0f
 		body.createFixture(fixtureDef)
 
-		// feet
+		// feet are set to a trapezoid at the bottom of the main body
 		val feetBounds = PolygonShape()
 		val feetHalfWTop = bodyHW - 0.02f
 		val feetHalfWBottom = feetHalfWTop - 0.08f
