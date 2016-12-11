@@ -29,24 +29,52 @@ class LogicEngine {
 		engine.addEntity(currentRoom)
 		engine.addEntity(player)
 	}
-	
+
+	fun calcXPos(mapObject: RectangleMapObject): Float {
+		return mapObject.rectangle.x / Constants.PPM + mapObject.rectangle.width / Constants.PPM / 2f
+	}
+
+	fun calcYPos(mapObject: RectangleMapObject): Float {
+		return mapObject.rectangle.y / Constants.PPM + mapObject.rectangle.height / Constants.PPM / 2f
+	}
+
+	fun calcHalfWidth(mapObject: RectangleMapObject): Float {
+		return mapObject.rectangle.width / Constants.PPM / 2f
+	}
+
+	fun calcHalfHeight(mapObject: RectangleMapObject): Float {
+		return mapObject.rectangle.height / Constants.PPM / 2f
+	}
+
 	fun create() {
 		currentRoom.create()
 		
 		for (mapObject in currentRoom.getCollisionObjects()) {
 			if (mapObject is RectangleMapObject) {
 				val bodyDef: BodyDef = BodyDef()
-				val xPos = mapObject.rectangle.x / Constants.PPM + mapObject.rectangle.width / Constants.PPM / 2f
-				val yPos = mapObject.rectangle.y / Constants.PPM + mapObject.rectangle.height / Constants.PPM / 2f
-				bodyDef.position.set(Vector2(xPos, yPos))
+				bodyDef.position.set(Vector2(calcXPos(mapObject), calcYPos(mapObject)))
 				val body: Body = world.createBody(bodyDef)
 				val floorBox: PolygonShape = PolygonShape()
-				floorBox.setAsBox(mapObject.rectangle.width / Constants.PPM / 2f, mapObject.rectangle.height / Constants.PPM / 2f)
+				floorBox.setAsBox(calcHalfWidth(mapObject), calcHalfHeight(mapObject))
 				val fixtureDef: FixtureDef = FixtureDef()
 				fixtureDef.shape = floorBox
 				fixtureDef.friction = 2f
 				body.createFixture(fixtureDef)
 				floorBox.dispose()
+			}
+		}
+		for (candy in currentRoom.getCandyObjects()) {
+			if (candy is RectangleMapObject) {
+				val bodyDef: BodyDef = BodyDef()
+				bodyDef.position.set(Vector2(calcXPos(candy), calcYPos(candy)))
+				val body: Body = world.createBody(bodyDef)
+				val box: PolygonShape = PolygonShape()
+				box.setAsBox(calcHalfWidth(candy), calcHalfHeight(candy))
+				val fixtureDef: FixtureDef = FixtureDef()
+				fixtureDef.shape = box
+				fixtureDef.isSensor = true
+				body.createFixture(fixtureDef)
+				box.dispose()
 			}
 		}
 	}
@@ -82,10 +110,10 @@ class LogicEngine {
 		val body: Body = world.createBody(bodyDef)
 
 		// main body
-		val bodyW = 0.4f
-		val bodyH = 0.8f
+		val bodyHW = 0.4f
+		val bodyHH = 0.8f
 		val bounds = PolygonShape()
-		bounds.setAsBox(0.4f, 0.8f)
+		bounds.setAsBox(bodyHW, bodyHH)
 		val fixtureDef: FixtureDef = FixtureDef()
 		fixtureDef.shape = bounds
 		fixtureDef.density = 1f
@@ -95,14 +123,14 @@ class LogicEngine {
 
 		// feet
 		val feetBounds = PolygonShape()
-		val feetHalfWTop = 0.38f
-		val feetHalfWBottom = 0.3f
+		val feetHalfWTop = bodyHW - 0.02f
+		val feetHalfWBottom = feetHalfWTop - 0.08f
 		val feetHeight = 0.05f
 		feetBounds.set(arrayOf(
-				Vector2(-feetHalfWTop, -bodyH),
-				Vector2(feetHalfWTop, -bodyH),
-				Vector2(feetHalfWBottom, -bodyH - feetHeight),
-				Vector2(-feetHalfWBottom,-bodyH - feetHeight)))
+				Vector2(-feetHalfWTop, -bodyHH),
+				Vector2(feetHalfWTop, -bodyHH),
+				Vector2(feetHalfWBottom, -bodyHH - feetHeight),
+				Vector2(-feetHalfWBottom,-bodyHH - feetHeight)))
 		//feetBounds.setAsBox(0.38f, 0.05f, Vector2(0f, -bodyH), 0f)
 		val feetFixtureDef: FixtureDef = FixtureDef()
 		feetFixtureDef.shape = feetBounds
