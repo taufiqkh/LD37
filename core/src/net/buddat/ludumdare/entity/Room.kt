@@ -31,4 +31,12 @@ public class Room(mapFile: String) : Entity() {
 		return tiledMap.layers.get(Constants.collisionsLayer).objects
 	}
 	
+	public fun getCandyObjects(): MapObjects {
+		return tiledMap.layers.get(Constants.candyLayer).objects
+	}
+	
+	public fun getSpawnObjects(): MapObjects {
+		return tiledMap.layers.get(Constants.spawnLayer).objects
+	}
+	
 }
