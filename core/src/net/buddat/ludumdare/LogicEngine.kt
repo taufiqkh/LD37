@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
+import com.badlogic.gdx.utils.Array as GdxArray
 import net.buddat.ludumdare.collisions.DispatchingContactListener
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.entity.FixedBlock
@@ -19,12 +20,19 @@ import net.buddat.ludumdare.movement.Speed
  */
 class LogicEngine {
 	val engine: Engine = Engine()
-	val player: PlayerEntity
+	lateinit var player: PlayerEntity
 	val inputHandler = InputHandler()
 
-	val world: World = World(Vector2(0f, -Speed.gravity), true)
+	lateinit var world: World
 
-	var currentRoom: Room
+	lateinit var currentRoom: Room
+
+	val rooms: MutableList<String> = mutableListOf(
+			Constants.defaultMap,
+			"level1.tmx"
+	)
+
+	lateinit var nextMap: String
 
 	//Event Listeners
 	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
@@ -35,12 +43,7 @@ class LogicEngine {
 
 	private val landListeners: MutableList<LandListener> = mutableListOf()
 
-	init {
-		currentRoom = Room(Constants.defaultMap)
-		player = createPlayer()
-		engine.addEntity(currentRoom)
-		engine.addEntity(player)
-	}
+	var finished = false
 
 	fun calcXPos(mapObject: RectangleMapObject): Float {
 		return mapObject.rectangle.x / Constants.PPM + mapObject.rectangle.width / Constants.PPM / 2f
@@ -73,8 +76,17 @@ class LogicEngine {
 	}
 
 	fun create() {
+		nextMap = rooms.first()
+		rooms.removeAt(0)
+		currentRoom = Room(nextMap)
 		currentRoom.create()
-		
+
+		world = World(Vector2(0f, -Speed.gravity), true)
+		player = createPlayer()
+
+		val spawn = currentRoom.getSpawnObjects().first() as RectangleMapObject
+		player.body.position.set(spawn.rectangle.x, spawn.rectangle.y)
+
 		for (mapObject in currentRoom.getCollisionObjects()) {
 			if (mapObject is RectangleMapObject) {
 				val bodyDef: BodyDef = BodyDef()
@@ -99,7 +111,6 @@ class LogicEngine {
 					currentRoom.candies.add(candy)
 				}
 		world.setContactListener(DispatchingContactListener())
-
 	}
 
 	fun getPlayerPosn(): Vector2 {
@@ -108,11 +119,11 @@ class LogicEngine {
 
 	// Avoid slow spiral of death on slow devices
 	val minFrameTime = 0.25f
-	val timeStep = 1/90.0f
+	val timeStep = 1 / 90.0f
 	val velocityIterations = 6
 	val positionIterations = 2
 
-	var accumulator:Double = 0.0
+	var accumulator: Double = 0.0
 
 	private var timeOfDeath = Double.NaN
 
@@ -141,6 +152,7 @@ class LogicEngine {
 				} else {
 					timeOfDeath += delta
 				}
+				return
 			} else if (jumpedFrom != null) {
 				for (listener in jumpListeners) {
 					listener.onJump(player, jumpedFrom)
@@ -150,7 +162,30 @@ class LogicEngine {
 					listener.onLand(player, landedOn)
 				}
 			}
+			if (currentRoom.candies.isEmpty()) {
+				if (!rooms.isEmpty()) {
+					clearRoom()
+					create()
+				} else {
+					finished = true
+				}
+			}
 		}
+	}
+
+	fun clearRoom() {
+		player.blockContacts.clear()
+		player.feetContacts.clear()
+		player.isAirborne = false
+		player.isRunning = false
+		player.body.angularVelocity = 0f
+		player.body.linearVelocity.set(0f, 0f)
+		val bodies = GdxArray<Body>(world.bodyCount)
+		world.getBodies(bodies)
+		for (body in bodies) {
+			world.destroyBody(body)
+		}
+		world.dispose()
 	}
 
 	fun createPlayer(): PlayerEntity {
@@ -181,7 +216,7 @@ class LogicEngine {
 				Vector2(-feetHalfWTop, -bodyHH),
 				Vector2(feetHalfWTop, -bodyHH),
 				Vector2(feetHalfWBottom, -bodyHH - feetHeight),
-				Vector2(-feetHalfWBottom,-bodyHH - feetHeight)))
+				Vector2(-feetHalfWBottom, -bodyHH - feetHeight)))
 		//feetBounds.setAsBox(0.38f, 0.05f, Vector2(0f, -bodyH), 0f)
 		val feetFixtureDef: FixtureDef = FixtureDef()
 		feetFixtureDef.shape = feetBounds
