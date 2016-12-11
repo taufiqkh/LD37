@@ -24,11 +24,16 @@ class LogicEngine {
 
 	val world: World = World(Vector2(0f, -Speed.gravity), true)
 
-	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
-
 	var currentRoom: Room
 
+	//Event Listeners
+	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
+
 	private val playerDeathListeners: MutableList<PlayerDeathListener> = mutableListOf()
+
+	private val jumpListeners: MutableList<JumpListener> = mutableListOf()
+
+	private val landListeners: MutableList<LandListener> = mutableListOf()
 
 	init {
 		currentRoom = Room(Constants.defaultMap)
@@ -188,6 +193,22 @@ class LogicEngine {
 
 	fun addPlayerDeathListener(playerDeathListener: PlayerDeathListener) {
 		playerDeathListeners.add(playerDeathListener)
+	}
+
+	fun addJumpListener(jumpListener: JumpListener) {
+		jumpListeners.add(jumpListener)
+	}
+
+	fun addLandListener(landListener: LandListener) {
+		landListeners.add(landListener)
+	}
+
+	interface JumpListener {
+		fun onJump(player: PlayerEntity, fromSurface: FixedBlock)
+	}
+
+	interface LandListener {
+		fun onLand(player: PlayerEntity, fixedBlock: FixedBlock)
 	}
 
 	interface CandyRemovalListener {
