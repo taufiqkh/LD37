@@ -44,6 +44,16 @@ class PlayerEntity(val body: Body) : Entity() {
 		isDead = true
 	}
 
+	val blockContacts: MutableSet<FixedBlock> = mutableSetOf()
+
+	fun startContact(fixedBlock: FixedBlock) {
+		blockContacts.add(fixedBlock)
+	}
+
+	fun endContact(fixedBlock: FixedBlock) {
+		blockContacts.remove(fixedBlock)
+	}
+
 	fun startContact(contactableEntity: ContactableEntity) {
 		println("Unknown wtf")
 	}

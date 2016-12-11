@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import net.buddat.ludumdare.collisions.DispatchingContactListener
 import net.buddat.ludumdare.entity.Candy
+import net.buddat.ludumdare.entity.FixedBlock
 
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
@@ -23,11 +24,16 @@ class LogicEngine {
 
 	val world: World = World(Vector2(0f, -Speed.gravity), true)
 
-	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
-
 	var currentRoom: Room
 
+	//Event Listeners
+	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
+
 	private val playerDeathListeners: MutableList<PlayerDeathListener> = mutableListOf()
+
+	private val jumpListeners: MutableList<JumpListener> = mutableListOf()
+
+	private val landListeners: MutableList<LandListener> = mutableListOf()
 
 	init {
 		currentRoom = Room(Constants.defaultMap)
@@ -80,6 +86,7 @@ class LogicEngine {
 				fixtureDef.shape = floorBox
 				fixtureDef.friction = 2f
 				body.createFixture(fixtureDef)
+				body.userData = FixedBlock(body)
 				floorBox.dispose()
 			}
 		}
@@ -186,6 +193,22 @@ class LogicEngine {
 
 	fun addPlayerDeathListener(playerDeathListener: PlayerDeathListener) {
 		playerDeathListeners.add(playerDeathListener)
+	}
+
+	fun addJumpListener(jumpListener: JumpListener) {
+		jumpListeners.add(jumpListener)
+	}
+
+	fun addLandListener(landListener: LandListener) {
+		landListeners.add(landListener)
+	}
+
+	interface JumpListener {
+		fun onJump(player: PlayerEntity, fromSurface: FixedBlock)
+	}
+
+	interface LandListener {
+		fun onLand(player: PlayerEntity, fixedBlock: FixedBlock)
 	}
 
 	interface CandyRemovalListener {
