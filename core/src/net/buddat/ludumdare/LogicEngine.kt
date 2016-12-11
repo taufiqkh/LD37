@@ -27,7 +27,9 @@ class LogicEngine {
 
 	val rooms: MutableList<String> = mutableListOf(
 			Constants.defaultMap,
-			"level1.tmx"
+			"level1.tmx",
+			"level2.tmx",
+			"level3.tmx"
 	)
 
 	lateinit var nextMap: String
@@ -166,25 +168,27 @@ class LogicEngine {
 					listener.onCandyRemoval(it)
 				}
 			}
-			val mCalc = MovementCalculator()
-			val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
-			if (player.isDead) {
-				if (timeOfDeath.isNaN()) {
-					timeOfDeath = 0.0
-					for (listener in playerDeathListeners) {
-						listener.onPlayerDeath(player)
+			if (!player.ignoreMovement) {
+				val mCalc = MovementCalculator()
+				val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
+				if (player.isDead) {
+					if (timeOfDeath.isNaN()) {
+						timeOfDeath = 0.0
+						for (listener in playerDeathListeners) {
+							listener.onPlayerDeath(player)
+						}
+					} else {
+						timeOfDeath += delta
 					}
-				} else {
-					timeOfDeath += delta
-				}
-				return
-			} else if (jumpedFrom != null) {
-				for (listener in jumpListeners) {
-					listener.onJump(player, jumpedFrom)
-				}
-			} else if (landedOn != null) {
-				for (listener in landListeners) {
-					listener.onLand(player, landedOn)
+					return
+				} else if (jumpedFrom != null) {
+					for (listener in jumpListeners) {
+						listener.onJump(player, jumpedFrom)
+					}
+				} else if (landedOn != null) {
+					for (listener in landListeners) {
+						listener.onLand(player, landedOn)
+					}
 				}
 			}
 			if (currentRoom.candies.isEmpty()) {

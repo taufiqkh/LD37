@@ -27,6 +27,8 @@ class PlayerEntity(val body: Body, val feet: Fixture) : Entity() {
 		}
 	var movementDirLeft: Boolean = false
 	var isDead: Boolean = false
+	
+	var ignoreMovement = false;
 
 	fun startContact(candy: Candy) {
 		if (!candy.isEaten) {

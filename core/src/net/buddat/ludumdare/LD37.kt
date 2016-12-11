@@ -88,6 +88,7 @@ class LD37 : ApplicationAdapter() {
 			} else {
 				mapSwitchDir = true
 				switchingMap = false
+				logic.player.ignoreMovement = false
 				fboBatch.shader = shaderMap
 			}
 		}
@@ -192,6 +193,7 @@ class LD37 : ApplicationAdapter() {
 		
 		if (logic.currentRoom.tiledMap != tiledMap || switchingMap) {
 			switchingMap = true
+			logic.player.ignoreMovement = true
 			switchMap(logic.currentRoom.tiledMap, false)
 			if (switchingMap) fboBatch.shader = shaderBg
 		}

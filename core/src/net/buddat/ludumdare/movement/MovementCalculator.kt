@@ -28,10 +28,11 @@ class MovementCalculator() {
 				if (player.candyEffectTypes.contains(CandyEffectType.MOVE_SLOWER)) {
 					modifier *= CandyEffectType.moveSlowerModifier
 				}
+				if (player.isAirborne) modifier *= 0.15f
 				val impulse = if (right) horizontalImpulse
 				else -horizontalImpulse
 				player.movementDirLeft = impulse < 0
-				player.body.applyLinearImpulse(impulse, 0f, bodyPosn.x, bodyPosn.y, true)
+				player.body.applyLinearImpulse(impulse * modifier, 0f, bodyPosn.x, bodyPosn.y, true)
 			}
 		} else if (velX == 0f) {
 			player.isRunning = false;
