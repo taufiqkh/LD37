@@ -23,6 +23,8 @@ class LogicEngine {
 
 	val world: World = World(Vector2(0f, -Speed.gravity), true)
 
+	private val candyRemovalListeners: MutableList<CandyRemovalListener> = mutableListOf()
+
 	var currentRoom: Room
 
 	init {
@@ -115,6 +117,9 @@ class LogicEngine {
 			eatenCandies.forEach {
 				currentRoom.candies.remove(it)
 				world.destroyBody(it.body)
+				for (listener in candyRemovalListeners) {
+					listener.onCandyRemoval(it)
+				}
 			}
 		}
 	}
@@ -159,5 +164,13 @@ class LogicEngine {
 		bounds.dispose()
 		feetBounds.dispose()
 		return body
+	}
+
+	fun addCandyRemovalListener(candyRemovalListener: CandyRemovalListener) {
+		candyRemovalListeners.add(candyRemovalListener)
+	}
+
+	interface CandyRemovalListener {
+		fun onCandyRemoval(candy: Candy)
 	}
 }

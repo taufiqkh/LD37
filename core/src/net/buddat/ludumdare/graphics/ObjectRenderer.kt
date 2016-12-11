@@ -10,10 +10,14 @@ import com.badlogic.gdx.utils.Array as GdxArray
 
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.Constants
+import net.buddat.ludumdare.LogicEngine
 import net.buddat.ludumdare.entity.Room
 
-class ObjectRenderer {
-	
+class ObjectRenderer : LogicEngine.CandyRemovalListener {
+	override fun onCandyRemoval(candy: Candy) {
+		print("omnomnom")
+	}
+
 	lateinit var batch: SpriteBatch
 	lateinit var objectList: ArrayList<ObjectRenderable>
 	lateinit var candyTex: Texture

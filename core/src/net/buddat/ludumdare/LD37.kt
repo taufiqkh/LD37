@@ -133,6 +133,7 @@ class LD37 : ApplicationAdapter() {
 		
 		objectRenderer = ObjectRenderer()
 		objectRenderer.create()
+		logic.addCandyRemovalListener(objectRenderer)
 		
 		uiRenderer = UIRenderer()
 		uiRenderer.create()
