@@ -38,7 +38,7 @@ class LogicEngine {
 		//createCircle()
 	}
 	
-	public fun create() {
+	fun create() {
 		currentRoom.create()
 		
 		for (mapObject in currentRoom.getCollisionObjects()) {
@@ -77,7 +77,7 @@ class LogicEngine {
 		while (accumulator >= timeStep) {
 			world.step(timeStep, velocityIterations, positionIterations)
 			accumulator -= timeStep
-			val mCalc = MovementCalculator(delta)
+			val mCalc = MovementCalculator()
 			mCalc.rawMovement(inputHandler.poll(), player)
 		}
 	}
@@ -97,35 +97,6 @@ class LogicEngine {
 		val body: Body = world.createBody(bodyDef)
 		body.createFixture(fixtureDef)
 		bounds.dispose()
-		return body
-	}
-	fun createCircle() {
-		val bodyDef: BodyDef = BodyDef()
-		bodyDef.type = BodyDef.BodyType.DynamicBody
-		bodyDef.position.set(10f, 10f)
-		val circle: CircleShape = CircleShape()
-		circle.radius = 2f
-		val fixtureDef: FixtureDef = FixtureDef()
-		fixtureDef.shape = CircleShape()
-		fixtureDef.density = 0.5f
-		fixtureDef.friction = 0.4f
-		fixtureDef.restitution = 0.5f
-		val body: Body = world.createBody(bodyDef)
-		body.createFixture(fixtureDef)
-		circle.dispose()
-	}
-
-	fun createFloor(y: Float): Body {
-		val bodyDef: BodyDef = BodyDef()
-		bodyDef.position.set(Vector2(0f, y))
-		val body: Body = world.createBody(bodyDef)
-		val floorBox: PolygonShape = PolygonShape()
-		floorBox.setAsBox(100f, 8f)
-		val fixtureDef: FixtureDef = FixtureDef()
-		fixtureDef.shape = floorBox
-		fixtureDef.friction = 2f
-		body.createFixture(fixtureDef)
-		floorBox.dispose()
 		return body
 	}
 }

@@ -147,9 +147,8 @@ class LD37 : ApplicationAdapter() {
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined
 		playerRenderer.currentState = when {
-			logic.player.body.linearVelocity.y >= 0.01f -> AnimationState.JUMPING
-			logic.player.body.linearVelocity.y <= -0.01f -> AnimationState.JUMPING
-			logic.player.body.linearVelocity.x != 0f -> AnimationState.RUNNING
+			logic.player.isAirborne -> AnimationState.JUMPING
+			logic.player.isRunning -> AnimationState.RUNNING
 			else -> AnimationState.IDLE
 		}
 		playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)

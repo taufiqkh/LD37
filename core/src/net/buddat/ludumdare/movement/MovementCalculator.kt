@@ -1,31 +1,28 @@
 package net.buddat.ludumdare.movement
 
-import com.badlogic.gdx.math.Vector2
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.input.InputHandler
-import net.buddat.ludumdare.movement.Speed.gravity
 import net.buddat.ludumdare.movement.Speed.horizontalImpulse
 import net.buddat.ludumdare.movement.Speed.jumpSpeed
-import net.buddat.ludumdare.movement.Speed.movementSpeed
 
 /**
- * Calculates movement based on a delta
+ * Calculates raw movement impulses, irrespective of obstacles
  */
-class MovementCalculator(val delta: Float) {
+class MovementCalculator() {
 	fun applyHorizonalImpulse(left: Boolean, right: Boolean, player: PlayerEntity) {
 		val velX = player.body.linearVelocity.x
 		if (right xor left) {
 			val bodyPosn = player.body.position
 			if (right && velX < Speed.maxHorzVelocity ||
 					left && velX > -Speed.maxHorzVelocity) {
-				player.isMoving = true
+				player.isRunning = true
 				val impulse = if (right) horizontalImpulse
 				else -horizontalImpulse
 				player.movementDirLeft = impulse < 0
 				player.body.applyLinearImpulse(impulse, 0f, bodyPosn.x, bodyPosn.y, true)
 			}
 		} else if (velX == 0f) {
-			player.isMoving = false;
+			player.isRunning = false;
 		}
 	}
 
