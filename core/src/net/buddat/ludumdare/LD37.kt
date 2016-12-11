@@ -169,7 +169,6 @@ class LD37 : ApplicationAdapter() {
 		tiledMapRenderer.setView(camera)
 		tiledMapRenderer.render()
 		
-		objectRenderer.checkCandy(logic.currentRoom)
 		objectRenderer.render(camera)
 
 		playerRenderer.spriteBatch.projectionMatrix = camera.combined

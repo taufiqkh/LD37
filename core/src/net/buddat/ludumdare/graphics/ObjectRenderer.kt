@@ -14,8 +14,16 @@ import net.buddat.ludumdare.LogicEngine
 import net.buddat.ludumdare.entity.Room
 
 class ObjectRenderer : LogicEngine.CandyRemovalListener {
+	
 	override fun onCandyRemoval(candy: Candy) {
-		print("omnomnom")
+		var toRemove: ObjectRenderable? = null
+		for (obj in objectList)
+			if (obj.type == ObjectType.CANDY)
+				if (obj.mapObj == candy)
+					toRemove = obj
+		
+		if (toRemove != null)
+			objectList.remove(toRemove)
 	}
 
 	lateinit var batch: SpriteBatch
@@ -23,17 +31,17 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 	lateinit var candyTex: Texture
 	lateinit var sawTex: Texture
 	
+	var halfX: Float = 0f
+	var halfY: Float = 0f
+	
 	fun create() {
 		batch = SpriteBatch()
 		objectList = ArrayList<ObjectRenderable>()
 		
 		candyTex = Texture(Gdx.files.internal("pill.png"))
-	}
-	
-	fun checkCandy(currentRoom: Room) {
-		objectList.clear()
-		for (candy in currentRoom.candies)
-			objectList.add(ObjectRenderable(candy, ObjectType.CANDY))	
+		
+		halfX = candyTex.width / 4f
+		halfY = candyTex.height / 4f
 	}
 	
 	fun render(cam: Camera) {
@@ -43,7 +51,7 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 			if (obj.mapObj.mapObject is RectangleMapObject)
 				when {
 					obj.type == ObjectType.CANDY -> {
-						batch.draw(candyTex, obj.mapObj.mapObject.rectangle.x, obj.mapObj.mapObject.rectangle.y)
+						batch.draw(candyTex, obj.mapObj.mapObject.rectangle.x - halfX, obj.mapObj.mapObject.rectangle.y - halfY)
 					}
 					obj.type == ObjectType.SAWBLADE -> {
 						
