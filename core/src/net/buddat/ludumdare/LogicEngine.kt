@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.maps.objects.RectangleMapObject
+import net.buddat.ludumdare.entity.Candy
 
 import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.entity.Room
@@ -77,11 +78,12 @@ class LogicEngine {
 				floorBox.dispose()
 			}
 		}
-		for (candy in currentRoom.getCandyObjects()) {
-			if (candy is RectangleMapObject) {
-				createBoxSensor(candy)
-			}
-		}
+		val candyObjects = currentRoom.getCandyObjects()
+		candyObjects
+				.filterIsInstance<RectangleMapObject>()
+				.forEach { createBoxSensor(it).userData = Candy(it) }
+		world.setContactListener(CandyContactListener(candyObjects))
+
 	}
 
 	fun getPlayerPosn(): Vector2 {
@@ -126,7 +128,7 @@ class LogicEngine {
 		fixtureDef.restitution = 0f
 		body.createFixture(fixtureDef)
 
-		// feet
+		// feet are set to a trapezoid at the bottom of the main body
 		val feetBounds = PolygonShape()
 		val feetHalfWTop = bodyHW - 0.02f
 		val feetHalfWBottom = feetHalfWTop - 0.08f
