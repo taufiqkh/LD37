@@ -230,7 +230,7 @@ class LogicEngine {
 
 		// main body
 		val bodyHW = 0.4f
-		val bodyHH = 0.8f
+		val bodyHH = 0.7f
 		val bounds = PolygonShape()
 		bounds.setAsBox(bodyHW, bodyHH)
 		val fixtureDef: FixtureDef = FixtureDef()

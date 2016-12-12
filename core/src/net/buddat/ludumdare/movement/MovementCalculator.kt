@@ -6,6 +6,7 @@ import net.buddat.ludumdare.entity.PlayerEntity
 import net.buddat.ludumdare.input.InputHandler
 import net.buddat.ludumdare.movement.Speed.horizontalImpulse
 import net.buddat.ludumdare.movement.Speed.jumpSpeed
+import net.buddat.ludumdare.movement.Speed.airborneModifier
 
 /**
  * Calculates raw movement impulses, irrespective of obstacles
@@ -28,7 +29,7 @@ class MovementCalculator() {
 				if (player.candyEffectTypes.contains(CandyEffectType.MOVE_SLOWER)) {
 					modifier *= CandyEffectType.moveSlowerModifier
 				}
-				if (player.isAirborne) modifier *= 0.15f
+				if (player.isAirborne) modifier *= airborneModifier
 				val impulse = if (right) horizontalImpulse
 				else -horizontalImpulse
 				player.movementDirLeft = impulse < 0
