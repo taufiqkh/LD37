@@ -141,7 +141,12 @@ class LogicEngine {
 
 	var accumulator: Double = 0.0
 
-	private var timeOfDeath = Double.NaN
+	var timeOfDeath = Double.NaN
+		get() = field
+
+	var lastRestartTriggered = Float.NaN
+
+	private val restartTriggerTimeout = 3f
 
 	fun update(delta: Float) {
 		val frameTime = Math.min(delta, minFrameTime)
@@ -176,7 +181,17 @@ class LogicEngine {
 					listener.onCandyRemoval(it)
 				}
 			}
-			if (player.isDead) {
+			if (!lastRestartTriggered.isNaN()) {
+				lastRestartTriggered += delta
+			}
+			if (inputHandler.poll().restart) {
+				if (lastRestartTriggered.isNaN() || lastRestartTriggered > restartTriggerTimeout) {
+					lastRestartTriggered = 0f
+					clearRoom()
+					create()
+				}
+
+			} else if (player.isDead) {
 				if (timeOfDeath.isNaN()) {
 					timeOfDeath = 0.0
 					for (listener in playerDeathListeners) {
@@ -223,6 +238,7 @@ class LogicEngine {
 			world.destroyBody(body)
 		}
 		world.dispose()
+		timeOfDeath = Double.NaN
 	}
 
 	fun createPlayer(x: Float, y: Float): PlayerEntity {
