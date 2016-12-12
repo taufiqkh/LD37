@@ -79,9 +79,13 @@ class LogicEngine {
 		return body
 	}
 
-	fun create() {
+	fun createNext() {
 		nextMap = rooms.first()
 		rooms.removeAt(0)
+		create()
+	}
+
+	fun create() {
 		currentRoom = Room(nextMap)
 		currentRoom.create()
 
@@ -172,20 +176,20 @@ class LogicEngine {
 					listener.onCandyRemoval(it)
 				}
 			}
-			if (!player.ignoreMovement) {
+			if (player.isDead) {
+				if (timeOfDeath.isNaN()) {
+					timeOfDeath = 0.0
+					for (listener in playerDeathListeners) {
+						listener.onPlayerDeath(player)
+					}
+				} else {
+					timeOfDeath += delta
+				}
+				return
+			} else if (!player.ignoreMovement) {
 				val mCalc = MovementCalculator()
 				val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
-				if (player.isDead) {
-					if (timeOfDeath.isNaN()) {
-						timeOfDeath = 0.0
-						for (listener in playerDeathListeners) {
-							listener.onPlayerDeath(player)
-						}
-					} else {
-						timeOfDeath += delta
-					}
-					return
-				} else if (jumpedFrom != null) {
+				if (jumpedFrom != null) {
 					for (listener in jumpListeners) {
 						listener.onJump(player, jumpedFrom)
 					}
@@ -198,7 +202,7 @@ class LogicEngine {
 			if (currentRoom.candies.isEmpty()) {
 				if (!rooms.isEmpty()) {
 					clearRoom()
-					create()
+					createNext()
 				} else {
 					finished = true
 				}
