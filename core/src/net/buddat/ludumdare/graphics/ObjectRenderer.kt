@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.*
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
-import com.badlogic.gdx.utils.Array as GdxArray
 
 import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.Constants
@@ -28,10 +27,16 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 			objectList.remove(toRemove)
 	}
 
+	val pickupSize: Int = 24
+	
 	lateinit var batch: SpriteBatch
 	lateinit var objectList: ArrayList<ObjectRenderable>
 	lateinit var candyTex: Texture
-	lateinit var sawTex: Texture
+	
+	lateinit var pillsSheet: Texture
+	lateinit var pills: Array<TextureRegion>
+	lateinit var candySheet: Texture
+	lateinit var candies: Array<TextureRegion>
 	
 	var halfX: Float = 0f
 	var halfY: Float = 0f
@@ -40,23 +45,33 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 		batch = SpriteBatch()
 		objectList = ArrayList<ObjectRenderable>()
 		
+		pillsSheet = Texture(Gdx.files.internal("pills.png"))
+		pills = TextureRegion.split(pillsSheet, pickupSize, pickupSize)[0]
+		
+		candySheet = Texture(Gdx.files.internal("candies.png"))
+		candies = TextureRegion.split(candySheet, pickupSize, pickupSize)[0]
+		
 		candyTex = Texture(Gdx.files.internal("pill.png"))
 		
 		halfX = candyTex.width / 4f
 		halfY = candyTex.height / 4f
 	}
 	
-	fun render(cam: Camera) {
+	fun render(cam: Camera, diff: Float) {
 		batch.projectionMatrix = cam.combined
 		batch.begin()
 		for (obj in objectList) {
 			if (obj.mapObj.mapObject is RectangleMapObject)
 				when {
 					obj.type == ObjectType.CANDY -> {
+						var tex: TextureRegion = when (obj.mapObj.candyEffectType) {
+							CandyEffectType.NO_EFFECT -> if (diff < 5) pills[0] else candies[0]
+							else -> if (diff < 5) pills[1] else candies[1]
+						}
 						obj.rotation += obj.rotationSpeed
 						obj.scale()
-						batch.draw(candyTex, obj.mapObj.mapObject.rectangle.x - halfX, obj.mapObj.mapObject.rectangle.y - halfY, candyTex.width / 2f, candyTex.height / 2f,
-								candyTex.width.toFloat(), candyTex.height.toFloat(), obj.scale, obj.scale, obj.rotation, 0, 0, candyTex.width, candyTex.height, false, false)
+						batch.draw(tex, obj.mapObj.mapObject.rectangle.x - halfX, obj.mapObj.mapObject.rectangle.y - halfY, tex.regionWidth / 2f, tex.regionHeight / 2f,
+								tex.regionWidth.toFloat(), tex.regionHeight.toFloat(), obj.scale, obj.scale, obj.rotation)
 					}
 					obj.type == ObjectType.SAWBLADE -> {
 						

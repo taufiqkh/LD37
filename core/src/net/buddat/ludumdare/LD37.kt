@@ -228,7 +228,7 @@ class LD37 : ApplicationAdapter() {
 			tiledMapRenderer.setView(camera)
 			tiledMapRenderer.render()
 			
-			objectRenderer.render(camera)
+			objectRenderer.render(camera, currentDifficulty)
 	
 			playerRenderer.spriteBatch.projectionMatrix = camera.combined
 			playerRenderer.currentState = when {
