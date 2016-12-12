@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.graphics.Pixmap.Format
 
+import net.buddat.ludumdare.entity.Candy
+import net.buddat.ludumdare.entity.effects.CandyEffectType
 import net.buddat.ludumdare.graphics.PlayerRenderer
 import net.buddat.ludumdare.graphics.AnimationState
 import net.buddat.ludumdare.graphics.UIRenderer
@@ -21,7 +23,7 @@ import net.buddat.ludumdare.graphics.ObjectRenderer
 import net.buddat.ludumdare.graphics.ObjectRenderable
 import net.buddat.ludumdare.graphics.ObjectType
 
-class LD37 : ApplicationAdapter() {
+class LD37 : ApplicationAdapter(), LogicEngine.CandyRemovalListener{
 
 	private val logic: LogicEngine
 
@@ -250,9 +252,15 @@ class LD37 : ApplicationAdapter() {
 		fboBatch.end()
 	}
 		
-
 	override fun dispose() {
 		tiledMap.dispose()
 		playerRenderer.dispose()
+	}
+	
+	override fun onCandyRemoval(candy: Candy) {
+		when (candy.candyEffectType) {
+			CandyEffectType.NO_EFFECT -> currentDifficulty += 0.05f
+			else -> currentDifficulty += 0.2f
+		}
 	}
 }
