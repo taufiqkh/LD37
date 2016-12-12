@@ -156,7 +156,7 @@ class LD37 : ApplicationAdapter() {
 		shaderMap = ShaderProgram(Gdx.files.internal("shaders/testShad0.vert").readString(), Gdx.files.internal("shaders/testShad1.frag").readString())
 		println(shaderMap.log)
 		
-		logic.create()
+		logic.createNext()
 		
 		playerRenderer = PlayerRenderer()
 		playerRenderer.create()

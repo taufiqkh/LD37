@@ -79,9 +79,13 @@ class LogicEngine {
 		return body
 	}
 
-	fun create() {
+	fun createNext() {
 		nextMap = rooms.first()
 		rooms.removeAt(0)
+		create()
+	}
+
+	fun create() {
 		currentRoom = Room(nextMap)
 		currentRoom.create()
 
@@ -137,7 +141,12 @@ class LogicEngine {
 
 	var accumulator: Double = 0.0
 
-	private var timeOfDeath = Double.NaN
+	var timeOfDeath = Double.NaN
+		get() = field
+
+	var lastRestartTriggered = Float.NaN
+
+	private val restartTriggerTimeout = 3f
 
 	fun update(delta: Float) {
 		val frameTime = Math.min(delta, minFrameTime)
@@ -172,20 +181,30 @@ class LogicEngine {
 					listener.onCandyRemoval(it)
 				}
 			}
-			if (!player.ignoreMovement) {
+			if (!lastRestartTriggered.isNaN()) {
+				lastRestartTriggered += delta
+			}
+			if (inputHandler.poll().restart) {
+				if (lastRestartTriggered.isNaN() || lastRestartTriggered > restartTriggerTimeout) {
+					lastRestartTriggered = 0f
+					clearRoom()
+					create()
+				}
+
+			} else if (player.isDead) {
+				if (timeOfDeath.isNaN()) {
+					timeOfDeath = 0.0
+					for (listener in playerDeathListeners) {
+						listener.onPlayerDeath(player)
+					}
+				} else {
+					timeOfDeath += delta
+				}
+				return
+			} else if (!player.ignoreMovement) {
 				val mCalc = MovementCalculator()
 				val (jumpedFrom, landedOn) = mCalc.rawMovement(inputHandler.poll(), player)
-				if (player.isDead) {
-					if (timeOfDeath.isNaN()) {
-						timeOfDeath = 0.0
-						for (listener in playerDeathListeners) {
-							listener.onPlayerDeath(player)
-						}
-					} else {
-						timeOfDeath += delta
-					}
-					return
-				} else if (jumpedFrom != null) {
+				if (jumpedFrom != null) {
 					for (listener in jumpListeners) {
 						listener.onJump(player, jumpedFrom)
 					}
@@ -198,7 +217,7 @@ class LogicEngine {
 			if (currentRoom.candies.isEmpty()) {
 				if (!rooms.isEmpty()) {
 					clearRoom()
-					create()
+					createNext()
 				} else {
 					finished = true
 				}
@@ -219,6 +238,7 @@ class LogicEngine {
 			world.destroyBody(body)
 		}
 		world.dispose()
+		timeOfDeath = Double.NaN
 	}
 
 	fun createPlayer(x: Float, y: Float): PlayerEntity {
