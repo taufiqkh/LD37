@@ -13,7 +13,7 @@ uniform sampler2D u_texture;
 
 uniform float radius = 2000.0;
 uniform float angle;
-uniform vec2 center = vec2(1000.0, 1000.0);
+uniform vec2 center = vec2(1500.0, 1500.0);
 
 vec4 PostFX(sampler2D tex, vec2 uv)
 {

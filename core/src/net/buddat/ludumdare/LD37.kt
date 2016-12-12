@@ -106,7 +106,7 @@ class LD37 : ApplicationAdapter() {
 	}
 	
 	fun updateCameraPosition() {
-		camera.position.set(logic.getPlayerPosn().x * Constants.PPM + Constants.width / 5,
+		camera.position.set(logic.getPlayerPosn().x * Constants.PPM,
 				logic.getPlayerPosn().y * Constants.PPM, 0f)
 		
 		val camLeft = camera.position.x - camera.viewportWidth / 2f
@@ -196,6 +196,7 @@ class LD37 : ApplicationAdapter() {
 
 	override fun render() {
 		logic.update(Gdx.graphics.deltaTime)
+		audioHandler.playMusic(currentDifficulty / 5f)
 		
 		if (!logic.player.isAirborne && logic.player.isRunning)
 			audioHandler.setRunning(true)
