@@ -238,7 +238,7 @@ class LD37 : ApplicationAdapter() {
 			}
 			playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
 			
-			debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
+			//debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
 		mapFbo.end()
 		
 		fboBatch.begin()
