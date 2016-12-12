@@ -1,6 +1,7 @@
 package net.buddat.ludumdare.graphics
 
 import java.util.ArrayList
+import java.util.Random
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.*
@@ -13,6 +14,7 @@ import net.buddat.ludumdare.entity.Candy
 import net.buddat.ludumdare.Constants
 import net.buddat.ludumdare.LogicEngine
 import net.buddat.ludumdare.entity.Room
+import net.buddat.ludumdare.entity.effects.CandyEffectType
 
 class ObjectRenderer : LogicEngine.CandyRemovalListener {
 	
@@ -58,7 +60,10 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 			if (obj.mapObj.mapObject is RectangleMapObject)
 				when {
 					obj.type == ObjectType.CANDY -> {
-						batch.draw(candyTex, obj.mapObj.mapObject.rectangle.x - halfX, obj.mapObj.mapObject.rectangle.y - halfY)
+						obj.rotation += obj.rotationSpeed
+						obj.scale()
+						batch.draw(candyTex, obj.mapObj.mapObject.rectangle.x - halfX, obj.mapObj.mapObject.rectangle.y - halfY, candyTex.width / 2f, candyTex.height / 2f,
+								candyTex.width.toFloat(), candyTex.height.toFloat(), obj.scale, obj.scale, obj.rotation, 0, 0, candyTex.width, candyTex.height, false, false)
 					}
 					obj.type == ObjectType.SAWBLADE -> {
 						
@@ -74,6 +79,42 @@ enum class ObjectType {
 	CANDY, SAWBLADE
 }
 
-class ObjectRenderable(val mapObj: Candy, val type: ObjectType) {
-
+class ObjectRenderable(val mapObj: Candy, val type: ObjectType, val rand: Random) {
+	var rotation = rand.nextFloat() * 360f
+	var rotationSpeed = when {
+		mapObj.candyEffectType == CandyEffectType.MOVE_FASTER -> 10f + rand.nextFloat() * 10f
+		mapObj.candyEffectType == CandyEffectType.MOVE_SLOWER -> 2f - rand.nextFloat()
+		mapObj.candyEffectType != CandyEffectType.NO_EFFECT -> 5f + rand.nextFloat() * 5f
+		else -> 2f
+	}
+	
+	var scale = 1f
+	var scaleMax = when {
+		mapObj.candyEffectType == CandyEffectType.JUMP_HIGHER -> 2f
+		mapObj.candyEffectType == CandyEffectType.JUMP_LOWER -> 1f
+		else -> 1f
+	}
+	var scaleMin = when {
+		mapObj.candyEffectType == CandyEffectType.JUMP_HIGHER -> 1f
+		mapObj.candyEffectType == CandyEffectType.JUMP_LOWER -> 0.5f
+		else -> 1f
+	}
+	var scaleAmnt = 0.01f
+	var scaleDir = true
+	
+	fun scale() {
+		when {
+			scaleDir -> {
+				scale += scaleAmnt
+				if (scale > scaleMax)
+					scaleDir = false
+			}
+			!scaleDir -> {
+				scale -= scaleAmnt
+				if (scale < scaleMin)
+					scaleDir = true
+			}
+		}
+		
+	}
 }

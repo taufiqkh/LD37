@@ -1,5 +1,7 @@
 package net.buddat.ludumdare
 
+import java.util.Random
+
 import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -50,6 +52,8 @@ class LD37 : ApplicationAdapter() {
 	internal lateinit var mapFbo: FrameBuffer
 	internal lateinit var fboRegion: TextureRegion
 	internal lateinit var fboBatch: SpriteBatch
+	
+	var rand = Random(System.currentTimeMillis())
 
 	var shouldZoom = false
 	var camZoom = 1f
@@ -80,7 +84,7 @@ class LD37 : ApplicationAdapter() {
 				
 				objectRenderer.objectList.clear()
 				for (candy in logic.currentRoom.candies)
-					objectRenderer.objectList.add(ObjectRenderable(candy, ObjectType.CANDY))
+					objectRenderer.objectList.add(ObjectRenderable(candy, ObjectType.CANDY, rand))
 				
 				currentDifficulty += 1f
 			} else if (!mapSwitchDir && mapSwitchCurrAngle > 0f) {
