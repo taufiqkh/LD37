@@ -18,14 +18,14 @@ class UIRenderer {
 		fontTexture = Texture(Gdx.files.internal("font.png"))
 		fontTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
 		font = BitmapFont(Gdx.files.internal("font.fnt"), TextureRegion(fontTexture), false)
-		font.data.scale(-0.65f)
+		// font.data.scale(1f)
 		
 		spriteBatch = SpriteBatch()
 	}
 	
-	public fun render() {
+	public fun render(candy: Int) {
 		spriteBatch.begin()
-		font.draw(spriteBatch, "Holy shit there are words up here", 10f, Constants.height - 10f)
+		font.draw(spriteBatch, "candy remaining: ${candy}", 10f, Constants.height - 10f)
 		spriteBatch.end()
 	}
 }

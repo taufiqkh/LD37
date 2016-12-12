@@ -26,10 +26,12 @@ class LogicEngine {
 	lateinit var currentRoom: Room
 
 	val rooms: MutableList<String> = mutableListOf(
-			Constants.defaultMap,
+			"level00.tmx",
+			"level0.tmx",
 			"level1.tmx",
 			"level2.tmx",
-			"level3.tmx"
+			"level3.tmx",
+			"level000.tmx"
 	)
 
 	lateinit var nextMap: String

@@ -237,7 +237,7 @@ class LD37 : ApplicationAdapter() {
 				else -> AnimationState.IDLE
 			}
 			playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
-			
+			uiRenderer.render(logic.currentRoom.candies.count())
 			//debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
 		mapFbo.end()
 		
@@ -248,9 +248,8 @@ class LD37 : ApplicationAdapter() {
 			diffMod.applyMapDifficulty(currentDifficulty, fboBatch.shader)
 		fboBatch.draw(fboRegion, 0f, 0f)
 		fboBatch.end()
-		
-		uiRenderer.render()
 	}
+		
 
 	override fun dispose() {
 		tiledMap.dispose()
