@@ -56,7 +56,19 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 		halfX = candyTex.width / 4f
 		halfY = candyTex.height / 4f
 	}
-	
+
+	fun graphicForEffect(diff: Float, effectType: CandyEffectType): TextureRegion {
+		val powerUpGraphics = if (diff < 5) pills else candies
+		return powerUpGraphics[when (effectType) {
+			CandyEffectType.NO_EFFECT -> 0
+			CandyEffectType.JUMP_HIGHER -> 1
+			CandyEffectType.JUMP_LOWER -> 2
+			CandyEffectType.MOVE_FASTER -> 3
+			CandyEffectType.MOVE_SLOWER -> 4
+			else -> 5
+		}]
+	}
+
 	fun render(cam: Camera, diff: Float) {
 		batch.projectionMatrix = cam.combined
 		batch.begin()
@@ -64,14 +76,7 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 			if (obj.mapObj.mapObject is RectangleMapObject)
 				when {
 					obj.type == ObjectType.CANDY -> {
-						var tex: TextureRegion = when (obj.mapObj.candyEffectType) {
-							CandyEffectType.NO_EFFECT -> if (diff < 5) pills[0] else candies[0]
-							CandyEffectType.JUMP_HIGHER -> if (diff < 5) pills[1] else candies[1]
-							CandyEffectType.JUMP_LOWER -> if (diff < 5) pills[2] else candies[2]
-							CandyEffectType.MOVE_FASTER -> if (diff < 5) pills[3] else candies[3]
-							CandyEffectType.MOVE_SLOWER -> if (diff < 5) pills[4] else candies[4]
-							else -> if (diff < 5) pills[5] else candies[5]
-						}
+						val tex: TextureRegion = graphicForEffect(diff, obj.mapObj.candyEffectType)
 						obj.rotation += obj.rotationSpeed
 						obj.scale()
 						batch.draw(tex, obj.mapObj.mapObject.rectangle.x - halfX, obj.mapObj.mapObject.rectangle.y - halfY, tex.regionWidth / 2f, tex.regionHeight / 2f,
