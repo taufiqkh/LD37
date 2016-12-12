@@ -31,6 +31,7 @@ class LogicEngine {
 			"level1.tmx",
 			"level2.tmx",
 			"level3.tmx",
+			"level4.tmx",
 			"level000.tmx"
 	)
 

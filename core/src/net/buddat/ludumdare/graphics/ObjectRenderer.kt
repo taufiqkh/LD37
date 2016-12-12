@@ -66,7 +66,11 @@ class ObjectRenderer : LogicEngine.CandyRemovalListener {
 					obj.type == ObjectType.CANDY -> {
 						var tex: TextureRegion = when (obj.mapObj.candyEffectType) {
 							CandyEffectType.NO_EFFECT -> if (diff < 5) pills[0] else candies[0]
-							else -> if (diff < 5) pills[1] else candies[1]
+							CandyEffectType.JUMP_HIGHER -> if (diff < 5) pills[1] else candies[1]
+							CandyEffectType.JUMP_LOWER -> if (diff < 5) pills[2] else candies[2]
+							CandyEffectType.MOVE_FASTER -> if (diff < 5) pills[3] else candies[3]
+							CandyEffectType.MOVE_SLOWER -> if (diff < 5) pills[4] else candies[4]
+							else -> if (diff < 5) pills[5] else candies[5]
 						}
 						obj.rotation += obj.rotationSpeed
 						obj.scale()
@@ -98,9 +102,8 @@ class ObjectRenderable(val mapObj: Candy, val type: ObjectType, val rand: Random
 	
 	var scale = 1f
 	var scaleMax = when {
-		mapObj.candyEffectType == CandyEffectType.JUMP_HIGHER -> 2f
-		mapObj.candyEffectType == CandyEffectType.JUMP_LOWER -> 1f
-		else -> 1f
+		mapObj.candyEffectType == CandyEffectType.NO_EFFECT -> 1f
+		else -> 2f
 	}
 	var scaleMin = when {
 		mapObj.candyEffectType == CandyEffectType.JUMP_HIGHER -> 1f
