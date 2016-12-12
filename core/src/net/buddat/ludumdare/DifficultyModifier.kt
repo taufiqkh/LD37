@@ -3,6 +3,8 @@ package net.buddat.ludumdare
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.graphics.OrthographicCamera
 
+import java.util.Random
+
 class DifficultyModifier {
 	
 	var baseAngle = 0f
@@ -17,8 +19,10 @@ class DifficultyModifier {
 	var distanceMax = 0.001f
 	var startTime = System.currentTimeMillis()
 	
-	var camRotate = 0.001f
+	var camRotate = 0.02f
 	var totalRotation = 0f
+	
+	var rand = Random(System.currentTimeMillis())
 	
 	fun applyBackgroundDifficulty(diff: Float, shader: ShaderProgram) {
 		when {
@@ -68,6 +72,10 @@ class DifficultyModifier {
 			diff > 10.0f -> {
 				totalRotation += camRotate * diff / 5f
 				camera.rotate(camRotate * diff / 5f)
+				
+				if (Math.abs(totalRotation) > (diff - 10f) * 5f) {
+					camRotate *= -1f
+				}
 			}
 			totalRotation > 0 -> {
 				camera.rotate(-totalRotation)

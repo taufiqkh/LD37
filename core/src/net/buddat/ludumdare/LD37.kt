@@ -123,16 +123,16 @@ class LD37 : ApplicationAdapter() {
 		if (camBottom < 0)
 			camera.position.y = camera.viewportHeight / 2f
 		
-		if (shouldZoom)
+		if (currentDifficulty > 15f)
 			when {
 				zoomDir -> {
-					camZoom += 0.0001f
+					camZoom += 0.0001f * currentDifficulty
 					if (camZoom > 1f)
 						zoomDir = false
 				}
 				else -> {
-					camZoom -= 0.0001f
-					if (camZoom < 0.95f)
+					camZoom -= 0.0001f * currentDifficulty
+					if (camZoom < 1f - 0.005 * currentDifficulty)
 						zoomDir = true
 				} 
 			}

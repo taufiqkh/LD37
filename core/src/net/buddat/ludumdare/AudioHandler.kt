@@ -83,9 +83,25 @@ class AudioHandler: LogicEngine.CandyRemovalListener, LogicEngine.JumpListener, 
 	
 	fun playMusic(num: Float) {
 		var currentMusic = getMusic(when (num.toInt()) {
-			0 -> if (music1Looping) music1loop else music1
-			1 -> if (music2Looping) music2loop else music2
-			else -> if (music3Looping) music3loop else music3
+			0 -> {
+				if (music1Looping) music1loop else music1
+			}
+			1 -> {
+				var m1 = getMusic(music1)
+				if (m1 != null) m1.stop()
+				m1 = getMusic(music1loop)
+				if (m1 != null) m1.stop()
+				
+				if (music2Looping) music2loop else music2
+			}
+			else -> {
+				var m1 = getMusic(music2)
+				if (m1 != null) m1.stop()
+				m1 = getMusic(music2loop)
+				if (m1 != null) m1.stop()
+				
+				if (music3Looping) music3loop else music3
+			}
 		})
 		
 		if (currentMusic != null && !currentMusic.isPlaying) {
