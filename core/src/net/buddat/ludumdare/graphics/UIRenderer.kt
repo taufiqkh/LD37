@@ -23,9 +23,12 @@ class UIRenderer {
 		spriteBatch = SpriteBatch()
 	}
 	
-	public fun render(candy: Int, dead: Boolean) {
+	public fun render(candy: Int, dead: Boolean, diff: Float) {
 		spriteBatch.begin()
-		font.draw(spriteBatch, "candy remaining: ${candy}", 10f, Constants.height - 10f)
+		if (diff < 5)
+			font.draw(spriteBatch, "pills remaining: ${candy}", 10f, Constants.height - 10f)
+		else
+			font.draw(spriteBatch, "candy remaining: ${candy}", 10f, Constants.height - 10f)
 		font.draw(spriteBatch, "press r to restart", 10f, 30f)
 		if (dead)
 			font.draw(spriteBatch, "try again", Constants.width / 2f - 120f, Constants.height / 2f - 15f)

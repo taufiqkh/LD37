@@ -237,7 +237,7 @@ class LD37 : ApplicationAdapter() {
 				else -> AnimationState.IDLE
 			}
 			playerRenderer.render(logic.getPlayerPosn().x * Constants.PPM, logic.getPlayerPosn().y * Constants.PPM, logic.player.movementDirLeft)
-			uiRenderer.render(logic.currentRoom.candies.count(), logic.player.isDead)
+			uiRenderer.render(logic.currentRoom.candies.count(), logic.player.isDead, currentDifficulty)
 			//debugRenderer.render(logic.world, camera.combined.scale(Constants.PPM, Constants.PPM, 0f))
 		mapFbo.end()
 		
