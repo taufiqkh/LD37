@@ -62,6 +62,7 @@ class LD37 : ApplicationAdapter() {
 	var currentDifficulty = -1f
 	
 	var switchingMap = false
+	var mapSwitchFirstCall = true;
 	var mapSwitchDir = true
 	var mapSwitchAngleChange = 0.1f
 	var mapSwitchCurrAngle = 0f
@@ -69,6 +70,11 @@ class LD37 : ApplicationAdapter() {
 	
 	fun switchMap(newMap: TiledMap, first: Boolean) {
 		if (switchingMap || first) {
+			if (mapSwitchFirstCall && !first) {
+				mapSwitchFirstCall = false
+				audioHandler.playSwirl()
+			}
+			
 			if (mapSwitchDir && mapSwitchCurrAngle < mapSwitchAngleMax && !first) {
 				mapSwitchCurrAngle += mapSwitchAngleChange
 			} else if (mapSwitchDir || first) {
@@ -91,6 +97,7 @@ class LD37 : ApplicationAdapter() {
 				mapSwitchCurrAngle -= mapSwitchAngleChange
 			} else {
 				mapSwitchDir = true
+				mapSwitchFirstCall = true
 				switchingMap = false
 				logic.player.ignoreMovement = false
 				fboBatch.shader = shaderMap
