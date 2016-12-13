@@ -11,7 +11,9 @@ data class KeyMappingConfig(val up: KeyMapping = KeyMapping(KeyMappingConfig.DEF
 							val left: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_LEFT, KeyMappingConfig.DEFAULT_LEFT2),
 							val right: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_RIGHT, KeyMappingConfig.DEFAULT_RIGHT2),
 							val jump: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_JUMP),
-							val restart: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_RESTART)) {
+							val restart: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_RESTART),
+							val diffup: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_DIFFUP),
+							val diffdown: KeyMapping = KeyMapping(KeyMappingConfig.DEFAULT_DIFFDOWN)) {
 	companion object {
 		val DEFAULT_UP = Input.Keys.W
 		val DEFAULT_UP2 = Input.Keys.UP
@@ -23,5 +25,7 @@ data class KeyMappingConfig(val up: KeyMapping = KeyMapping(KeyMappingConfig.DEF
 		val DEFAULT_RIGHT2 = Input.Keys.RIGHT
 		val DEFAULT_JUMP = Input.Keys.SPACE
 		val DEFAULT_RESTART = Input.Keys.R
+		val DEFAULT_DIFFUP = Input.Keys.EQUALS
+		val DEFAULT_DIFFDOWN = Input.Keys.MINUS
 	}
 }

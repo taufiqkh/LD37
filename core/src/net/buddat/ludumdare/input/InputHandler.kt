@@ -9,7 +9,8 @@ import com.badlogic.gdx.Input
 class InputHandler(val keyMapping: KeyMappingConfig = KeyMappingConfig()) {
 	data class InputResult(val up: Boolean, val down: Boolean,
 						   val left: Boolean, val right: Boolean,
-						   val jump: Boolean, val restart: Boolean)
+						   val jump: Boolean, val restart: Boolean,
+						   val diffup: Boolean, val diffdown: Boolean)
 	fun poll(): InputResult {
 		return InputResult(
 				isAnyPressed(keyMapping.up),
@@ -17,7 +18,9 @@ class InputHandler(val keyMapping: KeyMappingConfig = KeyMappingConfig()) {
 				isAnyPressed(keyMapping.left),
 				isAnyPressed(keyMapping.right),
 				isAnyPressed(keyMapping.jump),
-				isAnyPressed(keyMapping.restart))
+				isAnyPressed(keyMapping.restart),
+				isAnyPressed(keyMapping.diffup),
+				isAnyPressed(keyMapping.diffdown))
 	}
 
 	private fun isAnyPressed(key: KeyMapping): Boolean {

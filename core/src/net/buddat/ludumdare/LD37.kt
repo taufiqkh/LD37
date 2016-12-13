@@ -70,6 +70,9 @@ class LD37 : ApplicationAdapter(), LogicEngine.CandyRemovalListener{
 	var mapSwitchCurrAngle = 0f
 	var mapSwitchAngleMax = mapSwitchAngleChange * 30f
 	
+	var lastDiffChange = System.currentTimeMillis()
+	var diffChangeCooldown = 500L;
+	
 	fun switchMap(newMap: TiledMap, first: Boolean) {
 		if (switchingMap || first) {
 			if (mapSwitchFirstCall && !first) {
@@ -198,6 +201,18 @@ class LD37 : ApplicationAdapter(), LogicEngine.CandyRemovalListener{
 
 	override fun render() {
 		logic.update(Gdx.graphics.deltaTime)
+		var inputResult = logic.inputHandler.poll()
+		if (System.currentTimeMillis() - lastDiffChange > diffChangeCooldown) {
+			if (inputResult.diffup) {
+				currentDifficulty++;
+				lastDiffChange = System.currentTimeMillis()
+			}
+			if (inputResult.diffdown) {
+				currentDifficulty--;
+				lastDiffChange = System.currentTimeMillis()
+			}
+		}
+		
 		audioHandler.playMusic(currentDifficulty / 5f)
 		
 		if (!logic.player.isAirborne && logic.player.isRunning)

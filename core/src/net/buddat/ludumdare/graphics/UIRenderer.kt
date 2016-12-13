@@ -32,6 +32,7 @@ class UIRenderer {
 		font.draw(spriteBatch, "press r to restart", 10f, 30f)
 		if (dead)
 			font.draw(spriteBatch, "try again", Constants.width / 2f - 120f, Constants.height / 2f - 15f)
+		font.draw(spriteBatch, diff.toInt().toString(), Constants.width - 60f, 30f)
 		spriteBatch.end()
 	}
 }

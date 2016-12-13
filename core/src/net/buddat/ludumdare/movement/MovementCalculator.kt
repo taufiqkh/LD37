@@ -69,7 +69,7 @@ class MovementCalculator() {
 		val (up, down, left, right, jump) = input
 		// base movement
 		applyHorizonalImpulse(left, right, player)
-		return applyVerticalImpulse(jump, player)
+		return applyVerticalImpulse(jump || up, player)
 	}
 
 	data class MovementResult(val jump: FixedBlock?, val land: FixedBlock?) {
