@@ -10,7 +10,7 @@ public object Constants {
 	
 	public val backgroundCameraSpeed = 5f
 	
-	public val title = "Ludum Dare 37 Game"
+	public val title = "Screwy Louie - LD37"
 	
 	public val defaultMap = "level0.tmx"
 	public val collisionsLayer = "Collisions"
