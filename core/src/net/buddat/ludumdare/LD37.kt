@@ -185,6 +185,8 @@ class LD37 : ApplicationAdapter(), LogicEngine.CandyRemovalListener{
 		logic.addJumpListener(audioHandler)
 		logic.addLandListener(audioHandler)
 		
+		logic.addCandyRemovalListener(this)
+		
 		mapFbo = FrameBuffer(Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
 		fboRegion = TextureRegion(mapFbo.colorBufferTexture, 0, 0, Gdx.graphics.width, Gdx.graphics.height)
 		fboRegion.flip(false, true)
@@ -275,7 +277,7 @@ class LD37 : ApplicationAdapter(), LogicEngine.CandyRemovalListener{
 	override fun onCandyRemoval(candy: Candy) {
 		when (candy.candyEffectType) {
 			CandyEffectType.NO_EFFECT -> currentDifficulty += 0.05f
-			else -> currentDifficulty += 0.2f
+			else -> currentDifficulty += 0.1f
 		}
 	}
 }
